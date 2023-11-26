@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Models\Member;
 use DB;
+
 use Auth;
+use App\Models\Member;
+use App\Models\Corporate;
+use App\Models\Transaksi;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -45,8 +47,25 @@ class HomeController extends Controller
             $data['history_transaksi']  = $history_transaksi;
             $data['transaksi_terakhir'] = $transaksi_terakhir;
 
-            return view('home_user', compact('data'));    
+            return view('home_user', compact('data'));
         }else{
+            if (Auth::user()->is_corporate==1) {
+                $corporate_info = Corporate::where('user_id', auth()->id())->first();
+
+                $transaksi_terakhir = Transaksi::where('corporate_id', $corporate_info->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                $history_transaksi = Transaksi::where('corporate_id', $corporate_info->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                $data['saldo'] = $corporate_info->balance;
+                $data['history_transaksi'] = $history_transaksi;
+                $data['transaksi_terakhir'] = $transaksi_terakhir;
+
+                return view('home_user', compact('data'));
+            }
             return view('home');
         }
         

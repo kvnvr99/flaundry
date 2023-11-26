@@ -18,7 +18,7 @@ class MemberSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->where('id', '!=', 1)->where('id', '!=', 2)->delete();
+        DB::table('users')->where('id', '!=', 1)->where('id', '!=', 2)->where('id', '!=', 3)->delete();
         $members = [
             ["name"=> "Adhy", "email"=> "Adhy@gmail.com", "password" => "fruitslaundry$#@!", "status" => "active", "is_member" => "1", "phone" => "89661832545", "address" => "Apartemen Transit Ujung Berung (TB 1 No. 415)"],
             ["name"=> "Alex", "email"=> "Alex@gmail.com", "password" => "fruitslaundry$#@!", "status" => "", "is_member" => "1", "phone" => "0", "address" => "Puterco Grande No. 27"],

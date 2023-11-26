@@ -31,6 +31,7 @@
                 </div>
             </div>
             <div class="row">
+                {{-- {{dd(auth()->user()->getRoleNames())}} --}}
                 @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['infogram']))
                 <div class="col-md-6 col-xl-3">
                     <a href="{{ route('infogram') }}">

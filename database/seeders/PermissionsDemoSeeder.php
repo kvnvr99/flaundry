@@ -2,13 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-// use App\Models\Master\Menu;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
-use Illuminate\Support\Facades\Hash;
 use DB;
+// use App\Models\Master\Menu;
+use App\Models\Member;
+use App\Models\Corporate;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionsDemoSeeder extends Seeder
 {
@@ -49,7 +51,16 @@ class PermissionsDemoSeeder extends Seeder
             'home-member',
             'pesanan-baru',
             'list-transaksi',
-            'history-transaksi'
+            'history-transaksi',
+
+            'data-corporate',
+            'jemput_pesanan',
+
+            'home-corporate',
+            'list-transaksi-corporate',
+            'history-transaksi-corporate',
+
+
         ];
 
         // BUAT PERMISSION
@@ -72,6 +83,8 @@ class PermissionsDemoSeeder extends Seeder
             'registrasi',
             'data-member',
             'topup-member',
+            'data-corporate',
+            'jemput_pesanan',
             'quality-control',
             'cuci',
             'pengeringan',
@@ -116,6 +129,12 @@ class PermissionsDemoSeeder extends Seeder
             'dashboard',
             'infogram'
         ]);
+        $corporate = Role::create(['name' => 'Corporate']);
+        $corporate->givePermissionTo([
+            'home-corporate',
+            'list-transaksi-corporate',
+            'history-transaksi-corporate'
+        ]); // AKSES PERMISSON MEMBER
 
         // BUAT USER
         $user = \App\Models\User::factory()->create([
@@ -135,6 +154,44 @@ class PermissionsDemoSeeder extends Seeder
             'qr_code' => Hash::make('password')
         ]);
         $user->assignRole($sa);
+
+        $user = \App\Models\User::factory()->create([
+            'name' => 'Supervisior',
+            'email' => 'supervisior@mail.com',
+            'password' => Hash::make('password'),
+            'qr_code' => Hash::make('password')
+        ]);
+        $user->assignRole($Supervisior);
+
+        $user = \App\Models\User::factory()->create([
+            'name' => 'corporate',
+            'is_corporate' => 1,
+            'email' => 'corporate@mail.com',
+            'password' => Hash::make('password'),
+            'qr_code' => Hash::make('password')
+        ]);
+        $user->assignRole($corporate);
+        $data_corporate = Corporate::create([
+            'user_id' => $user->id,
+            'phone' => '087798889924',
+            'address' => 'jl ciwastra',
+            'balance' => 0,
+        ]);
+
+        $user = \App\Models\User::factory()->create([
+            'name' => 'member',
+            'is_member' => '1',
+            'email' => 'member@mail.com',
+            'password' => Hash::make('password'),
+            'qr_code' => Hash::make('password')
+        ]);
+        $user->assignRole($member);
+        $data_member = Member::create([
+            'user_id' => $user->id,
+            'phone' => '087798889924',
+            'address' => 'jl ciwastra',
+            'balance' => 0,
+        ]);
 
     }
 }

@@ -20,6 +20,7 @@ class PermintaanLaundry extends Authenticatable
      */
     protected $fillable = [
         'member_id',
+        'corporate_id',
         'tanggal',
         'waktu',
         'alamat',

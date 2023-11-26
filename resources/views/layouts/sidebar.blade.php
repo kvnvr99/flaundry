@@ -121,6 +121,27 @@
                     </div>
                 </li>
                 @endif
+                @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['data-corporate', 'jemput_pesanan']))
+                <li>
+                    <a href="#corporate" data-toggle="collapse">
+                        <i class="fe-user-check"></i>
+                        <span>Corporate</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="corporate">
+                        <ul class="nav-second-level">
+                            @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['data-corporate']))
+                            <li>
+                                <a href="{{ route('user_corporate') }}">
+                                    <span>Data Corporate</span>
+                                </a>
+                            </li>
+                            @endif
+                            
+                        </ul>
+                    </div>
+                </li>
+                @endif
                 @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['quality-control']))
                 <li>
                     <a href="{{ route('qc') }}">
@@ -153,7 +174,7 @@
                     </a>
                 </li>
                 @endif
-                @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jadwal-jemput', 'jemput-barang', 'jadwal-antar', 'antar-barang']))
+                @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jemput_pesanan', 'jadwal-jemput', 'jemput-barang', 'jadwal-antar', 'antar-barang']))
                 <li>
                     <a href="#expedisi" data-toggle="collapse">
                         <i class="fe-truck"></i>
@@ -162,6 +183,13 @@
                     </a>
                     <div class="collapse" id="expedisi">
                         <ul class="nav-second-level">
+                            @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jemput_pesanan']))
+                            <li>
+                                <a href="{{ route('jemput_pesanan') }}">
+                                    <span>Jemput Pesanan</span>
+                                </a>
+                            </li>
+                            @endif
                             @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jadwal-jemput']))
                             <li>
                                 <a href="{{ route('expedisi-jadwal-jemput') }}">

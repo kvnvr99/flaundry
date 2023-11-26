@@ -131,9 +131,9 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-apps">
 
-                            <a class="dropdown-item" href="{{ route('permintaan-laundry.create') }}"><i class="fe-message-circle"></i>&ensp;&ensp; Buat Pesanan Baru</a>
-                            <a class="dropdown-item" href="{{ route('permintaan-laundry') }}"><i class="fe-file-text"></i>&ensp;&ensp; List Transaksi</a>
-                            <a class="dropdown-item" href="{{ route('history-laundry') }}"><i class="fe-clock"></i>&ensp;&ensp; Lihat History Pemesanan</a>
+                            <a class="dropdown-item" href="{{ Auth::user()->is_member == 1 ? route('permintaan-laundry.create') : route('permintaan-laundry-corporate.create') }}"><i class="fe-message-circle"></i>&ensp;&ensp; Buat Pesanan Baru</a>
+                            <a class="dropdown-item" href="{{ Auth::user()->is_member == 1 ? route('permintaan-laundry') : route('permintaan-laundry-corporate') }}"><i class="fe-file-text"></i>&ensp;&ensp; List Transaksi</a>
+                            <a class="dropdown-item" href="{{ Auth::user()->is_member == 1 ? route('history-laundry') : route('history-laundry-corporate') }}"><i class="fe-clock"></i>&ensp;&ensp; Lihat History Pemesanan</a>
                             
                         </div>
                     </li>

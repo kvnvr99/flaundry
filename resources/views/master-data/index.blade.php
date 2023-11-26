@@ -124,8 +124,27 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="text-right">
-                                        <h3 class="text-dark mt-1"><span data-plugin="counterup">{{ $data['harga'] }}</h3>
+                                        <h3 class="text-dark mt-1"><span data-plugin="counterup">{{ $data['parfume'] }}</h3>
                                         <p class="text-muted mb-1 text-truncate">Parfume</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('user_corporate') }}">
+                        <div class="widget-rounded-circle card-box">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="avatar-lg rounded-circle border-warning border">
+                                        <i class="fe-archive font-22 avatar-title text-warning"></i>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-right">
+                                        <h3 class="text-dark mt-1"><span data-plugin="counterup">{{ $data['corporate'] }}</h3>
+                                        <p class="text-muted mb-1 text-truncate">Corporate</p>
                                     </div>
                                 </div>
                             </div>

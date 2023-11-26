@@ -4,43 +4,45 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 
 //Master Data
-use App\Http\Controllers\MasterData\MasterDataController;
-use App\Http\Controllers\MasterData\UserController;
-use App\Http\Controllers\MasterData\RoleController;
-use App\Http\Controllers\MasterData\OutletController;
-use App\Http\Controllers\MasterData\HargaController;
-use App\Http\Controllers\MasterData\LayananController;
-use App\Http\Controllers\MasterData\MemberController;
-use App\Http\Controllers\MasterData\ParfumeController;
-
-//Transaksi
-use App\Http\Controllers\Transaksi\KasirController;
-use App\Http\Controllers\Transaksi\TopupController;
-use App\Http\Controllers\Transaksi\ExpedisiJadwalJemputController;
-use App\Http\Controllers\Transaksi\ExpedisiJemputController;
-use App\Http\Controllers\Transaksi\ExpedisiJadwalAntarController;
-use App\Http\Controllers\Transaksi\ExpedisiAntarController;
 use App\Http\Controllers\Transaksi\QcController;
 use App\Http\Controllers\Transaksi\CuciController;
-use App\Http\Controllers\Transaksi\PengeringanController;
+use App\Http\Controllers\MasterData\RoleController;
+use App\Http\Controllers\MasterData\UserController;
+use App\Http\Controllers\Transaksi\KasirController;
+use App\Http\Controllers\Transaksi\TopupController;
+use App\Http\Controllers\MasterData\HargaController;
+use App\Http\Controllers\MasterData\MemberController;
+
+//Transaksi
+use App\Http\Controllers\MasterData\OutletController;
 use App\Http\Controllers\Transaksi\SetrikaController;
-use App\Http\Controllers\Transaksi\RequestLaundryController;
-use App\Http\Controllers\Transaksi\RekapComplainController;
-
-//Member
-use App\Http\Controllers\Member\PermintaanLaundryController;
-use App\Http\Controllers\Member\HistoryLaundryController;
-
-//Laporan
+use App\Http\Controllers\MasterData\LayananController;
+use App\Http\Controllers\MasterData\ParfumeController;
+use App\Http\Controllers\Laporan\LaporanAgenController;
+use App\Http\Controllers\Laporan\LaporanAbsenController;
+use App\Http\Controllers\MasterData\CorporateController;
 use App\Http\Controllers\Laporan\LaporanMemberController;
 use App\Http\Controllers\Laporan\LaporanOutletController;
+use App\Http\Controllers\MasterData\MasterDataController;
+use App\Http\Controllers\Member\HistoryLaundryController;
+use App\Http\Controllers\Transaksi\PengeringanController;
+
+//Member
+use App\Http\Controllers\Infogram\InfogramOutletController;
 use App\Http\Controllers\Laporan\LaporanExpedisiController;
-use App\Http\Controllers\Laporan\LaporanAbsenController;
-use App\Http\Controllers\Laporan\LaporanAgenController;
-use App\Http\Controllers\Laporan\LaporanFrenchaiseController;
+
+//Laporan
+use App\Http\Controllers\Transaksi\ExpedisiAntarController;
+use App\Http\Controllers\Transaksi\JemputPesananController;
+use App\Http\Controllers\Transaksi\RekapComplainController;
+use App\Http\Controllers\Member\PermintaanLaundryController;
+use App\Http\Controllers\Transaksi\ExpedisiJemputController;
+use App\Http\Controllers\Transaksi\RequestLaundryController;
 
 use App\Http\Controllers\Infogram\InfogramExpedisiController;
-use App\Http\Controllers\Infogram\InfogramOutletController;
+use App\Http\Controllers\Laporan\LaporanFrenchaiseController;
+use App\Http\Controllers\Transaksi\ExpedisiJadwalAntarController;
+use App\Http\Controllers\Transaksi\ExpedisiJadwalJemputController;
 
 Route::get('/', function() {
     return redirect('/login');
@@ -140,6 +142,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/edit/{id}', [ParfumeController::class, 'edit'])->name('parfume.edit');
             Route::put('/update', [ParfumeController::class, 'update'])->name('parfume.update');
             Route::get('/destroy/{id}', [ParfumeController::class, 'destroy'])->name('parfume.destroy');
+        });
+        
+        Route::prefix('corporate')->group(function () {
+            Route::get('/', [CorporateController::class, 'index'])->name('user_corporate');
+            Route::get('/getData', [CorporateController::class, 'getData'])->name('user_corporate.getData');
+            Route::get('/add', [CorporateController::class, 'add'])->name('user_corporate.add');
+            Route::post('/save', [CorporateController::class, 'save'])->name('user_corporate.save');
+            Route::get('/detail/{id}', [CorporateController::class, 'detail'])->name('user_corporate.detail');
+            Route::get('/edit/{id}', [CorporateController::class, 'edit'])->name('user_corporate.edit');
+            Route::put('/update', [CorporateController::class, 'update'])->name('user_corporate.update');
+            Route::get('/destroy/{id}', [CorporateController::class, 'destroy'])->name('user_corporate.destroy');
         });
 
     });
@@ -293,6 +306,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/destroy/{id}', [PermintaanLaundryController::class, 'destroy'])->name('permintaan-laundry.destroy');
         Route::post('/get-data-layanan', [PermintaanLaundryController::class, 'getDataLayanan'])->name('permintaan-laundry.get-data-layanan');
         Route::post('/get-data-parfume', [PermintaanLaundryController::class, 'getDataParfume'])->name('permintaan-laundry.get-data-parfume');
+    });
+
+
+    Route::prefix('jemput-pesanan')->middleware(['role_or_permission:Maintener|registrasi'])->group(function () {
+        Route::get('/', [JemputPesananController::class, 'index'])->name('jemput_pesanan');
+        Route::post('/get-layanan', [JemputPesananController::class, 'getDataLayanan'])->name('jemput_pesanan.get-data-layanan');
+        Route::get('/print/{kode_transaksi}', [JemputPesananController::class, 'print'])->name('jemput_pesanan.print');
+        Route::post('/store', [JemputPesananController::class, 'store'])->name('jemput_pesanan.store');
+        Route::post('/get-data', [JemputPesananController::class, 'getData'])->name('jemput_pesanan.get-data');
+        Route::get('/create/{id}', [JemputPesananController::class, 'create'])->name('jemput_pesanan.create');
     });
 
     Route::prefix('laporan-member')->middleware(['role_or_permission:Maintener|laporan'])->group(function () {

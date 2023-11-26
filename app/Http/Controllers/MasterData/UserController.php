@@ -28,7 +28,7 @@ class UserController extends Controller {
     }
 
     public function getData() {
-        $data = User::where('name', '!=', 'Maintener')->where('is_member', '=', '0')->orderBy('id', 'DESC');
+        $data = User::where('name', '!=', 'Maintener')->where('is_member', '=', '0')->where('is_corporate', '=', '0')->orderBy('id', 'DESC');
         return DataTables::of($data)
         ->addColumn('roles', function($data){
             $roles = $data->getRoleNames()->toArray();
@@ -66,6 +66,7 @@ class UserController extends Controller {
 
     public function store(UserRequest $request) {
         try {
+            // dd($request->role);
             $data = $request->except(['_token', '_method', 'id', 'password_confirm', 'role']);
             $data['password'] = Hash::make($request->password);
             $data['qr_code'] = Hash::make($request->password);

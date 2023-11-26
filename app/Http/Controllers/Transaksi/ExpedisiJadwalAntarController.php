@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Transaksi;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use DB;
+use App\Models\User;
 
-use App\Http\Requests\ExpedisiJadwalAntarRequest;
-use App\Models\ExpedisiJadwalAntar;
 use App\Models\Member;
-use App\Repositories\BaseRepository;
-use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use App\Models\ExpedisiJadwalAntar;
+use App\Http\Controllers\Controller;
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
+use Spatie\Permission\Models\Permission;
 
-use DB;
+use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\ExpedisiJadwalAntarRequest;
 
 class ExpedisiJadwalAntarController extends Controller {
 
@@ -27,10 +28,11 @@ class ExpedisiJadwalAntarController extends Controller {
     }
 
     public function index() {
-        $kurir = DB::table('users')
-        ->select('users.*')
-        ->where('role_id', '=', 6)
-        ->get();
+        $kurir = User::with('role')
+            ->whereHas('role', function ($query) {
+                $query->where('name', 'Expedisi');
+            })
+            ->get();
 
         return view('transaksi.expedisi-jadwal-antar.index',['kurir'=>$kurir]);
     }

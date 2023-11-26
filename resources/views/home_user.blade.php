@@ -260,7 +260,7 @@
                     </div> <!-- end widget-rounded-circle-->
                 </div> <!-- end col-->
 
-                <a class="col-md-6 col-xl-2" href="{{ route('permintaan-laundry.create') }}">
+                <a class="col-md-6 col-xl-2" href="{{ Auth::user()->is_member == 1 ? route('permintaan-laundry.create') : route('permintaan-laundry-corporate.create') }}">
                     <div class="widget-rounded-circle card-box">
                         <div class="row">
                             <div class="col-12">
@@ -280,7 +280,7 @@
                     </div> <!-- end widget-rounded-circle-->
                 </a> <!-- end col-->
 
-                <a class="col-md-6 col-xl-2" href="{{ route('history-laundry') }}">
+                <a class="col-md-6 col-xl-2" href="{{ Auth::user()->is_member == 1 ? route('history-laundry') : route('history-laundry-corporate') }}">
                     <div class="widget-rounded-circle card-box">
                         <div class="row">
                             <div class="col-12">
