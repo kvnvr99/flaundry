@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Transaksi;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Requests\RequestLaundryRequest;
-use App\Models\Transaksi;
-use App\Models\TransaksiDetail;
-use App\Models\TransaksiImage;
-use App\Models\ExpedisiJemputImage;
+use DB;
+use Carbon\Carbon;
 use App\Models\Harga;
 use App\Models\Outlet;
 use App\Models\Parfume;
+use App\Models\Corporate;
+use App\Models\Transaksi;
 use App\Models\LogActivity;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Models\TransaksiImage;
+use App\Models\TransaksiDetail;
+use App\Models\ExpedisiJemputImage;
+use App\Http\Controllers\Controller;
 use App\Repositories\BaseRepository;
-use DB;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\RequestLaundryRequest;
 
 class JemputPesananController extends Controller
 {
@@ -48,7 +49,7 @@ class JemputPesananController extends Controller
             $parfumes = Parfume::get();
             $images = ExpedisiJemputImage::get();
 
-            $info = DB::table('permintaan_laundries')->select('permintaan_laundries.*', 'users.name as nama', 'parfumes.nama as nama_parfume', 'layanans.nama as nama_layanan', 'corporate.phone')
+            $info = DB::table('permintaan_laundries')->select('permintaan_laundries.*', 'users.name as nama', 'parfumes.nama as nama_parfume', 'layanans.nama as nama_layanan','corporate.id as corporate_id', 'corporate.phone')
                                     ->join('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id', 'left')
                                     ->join('users', 'users.id', '=', 'corporate.user_id', 'left')
                                     ->join('parfumes', 'parfumes.id', '=', 'permintaan_laundries.parfume_id', 'left')
@@ -98,6 +99,8 @@ class JemputPesananController extends Controller
                 'kode_transaksi' => $kode_transaksi.strtoupper(Str::random(5)),
                 'kasir_id' => Auth::user()->id,
                 'permintaan_laundry_id' => $request->permintaan_laundry_id,
+                'member_id' => 0,
+                'outlet_id' => 0,
                 'corporate_id' => $request->corporate_id,
                 'nama' => $request->nama,
                 'alamat' => $request->alamat,
@@ -111,7 +114,7 @@ class JemputPesananController extends Controller
                 'is_done' => '1'
             ];
             DB::beginTransaction();
-            $transaksi = $this->model->store($data);
+            $transaksi = Transaksi::create($data);
             $detail = [];
             foreach ($request->layanan as $layanan) {
                 $transaksi_detail = [
@@ -125,7 +128,7 @@ class JemputPesananController extends Controller
                     'harga_jumlah_special_treatment' => $layanan['qty_special_treatment'] * $layanan['harga_special_treatment'],
                     "total" => $layanan['total']
                 ];
-                $detail [] = $this->detail->store($transaksi_detail);
+                $detail [] = TransaksiDetail::create($transaksi_detail);
             }
             if($request->hasfile('images')) {
                 $images = [];
@@ -133,16 +136,16 @@ class JemputPesananController extends Controller
                     $image = [];
                     $image['transaksi_id'] = $transaksi->id;
                     $image['image'] = $file->store('transaksi/registrasi', 'public');
-                    $images [] = $this->images->store($image);
+                    $images [] = TransaksiImage::create($image);
                 }
             }
-            $outlet_name = Outlet::where('id', $data['outlet_id'])->firstOrFail();
+            // $corporate = Corporate::where('id', $data['corporate_id'])->firstOrFail();
             LogActivity::create([
                 'user_id'   => Auth::user()->id,
                 'modul'     => 'Registrasi',
                 'model'     => 'Transaksi',
                 'action'    => 'Add',
-                'note'      => Auth::user()->name . ' Telah menambahkan registrasi dengan no ' . $data['kode_transaksi'] . ' di outlet ' . $outlet_name->nama,
+                'note'      => Auth::user()->name . ' Telah menambahkan registrasi dengan no ' . $data['kode_transaksi'],
                 'old_data'  => null,
                 'new_data'  => json_encode($data),
             ]);
@@ -163,8 +166,8 @@ class JemputPesananController extends Controller
 
     public function print($kode_transaksi) {
         try {
-            $data = Transaksi::with('TransaksiDetail', 'outlet')->where('kode_transaksi', $kode_transaksi)->first();
-            return view('transaksi.registrasi.faktur', compact('data'));
+            $data = Transaksi::with('TransaksiDetail')->where('kode_transaksi', $kode_transaksi)->first();
+            return view('transaksi.jemput_pesanan.faktur', compact('data'));
         } catch (\Throwable $th) {
             Alert::toast($th->getMessage(), 'error');
             return back();

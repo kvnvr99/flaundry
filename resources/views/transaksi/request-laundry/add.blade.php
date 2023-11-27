@@ -61,7 +61,7 @@
                                 <div class="row">
                                     <label class="col-md-3 col-form-label">Gambar Cucian</label>
                                     @foreach ($images as $val)
-                                        <span class="pip"><img class="thumbnail" src="{{ url('storage/app/public/transaksi/penjemputan/TJTXmZtg9IGTfTZxvcYQCqbZosliXe30MHbRQ2OK.jpg') }}"></span>
+                                        <span class="pip"><img class="thumbnail" src="{{ asset('storage/'). '/' . $val->image}}"></span>
                                     @endforeach
                                 </div>
                                 <br><br><br>

@@ -180,9 +180,10 @@ class RequestLaundryController extends Controller
         ->join('users', 'users.id', '=', 'members.user_id', 'left')
         ->join('parfumes', 'parfumes.id', '=', 'permintaan_laundries.parfume_id', 'left')
         ->join('layanans', 'layanans.id', '=', 'permintaan_laundries.layanan_id', 'left')
-        ->whereNotNull('permintaan_laundries.picked_at') 
+        ->whereNotNull('permintaan_laundries.picked_at')
         ->whereNull('permintaan_laundries.deleted_at') 
         ->whereRaw('permintaan_laundries.id NOT IN (SELECT ifnull(permintaan_laundry_id,0) FROM transaksis)')
+        ->where('permintaan_laundries.corporate_id','=', 0)
         ->orderBy('permintaan_laundries.layanan_id', 'ASC')
         ->get();
         return DataTables::of($data)

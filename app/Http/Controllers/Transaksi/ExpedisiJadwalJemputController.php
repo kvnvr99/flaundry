@@ -7,14 +7,15 @@ use App\Models\User;
 
 use App\Models\Member;
 use Illuminate\Http\Request;
+use App\Models\PermintaanLaundry;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Models\ExpedisiJadwalJemput;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
-use Spatie\Permission\Models\Permission;
 
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\ExpedisiJadwalJemputRequest;
 
@@ -40,10 +41,15 @@ class ExpedisiJadwalJemputController extends Controller {
 
     public function getData() {
         //belum difilter untuk orang yg menjemput
-        $data = DB::table('permintaan_laundries')
-        ->select('permintaan_laundries.*', 'users.name', 'users_picked.name as picked_name')
-        ->join('members', 'members.id', '=', 'permintaan_laundries.member_id')
-        ->join('users', 'users.id', '=', 'members.user_id')
+        $data = PermintaanLaundry::select(
+            'permintaan_laundries.*', 'users_picked.name as picked_name',
+            \DB::raw("CASE WHEN permintaan_laundries.member_id = 0 THEN 'corporate' ELSE 'members' END AS join_type"),
+            \DB::raw("COALESCE(corporate_user.name, users.name) AS name")
+        )
+        ->leftJoin('members', 'members.id', '=', 'permintaan_laundries.member_id')
+        ->leftJoin('users', 'users.id', '=', 'members.user_id')
+        ->leftJoin('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id')
+        ->leftJoin('users as corporate_user', 'corporate_user.id', '=', 'corporate.user_id')
         ->join('users as users_picked', 'users_picked.id', '=', 'permintaan_laundries.picked_by', 'left')
         ->whereNull('permintaan_laundries.deleted_at')
         ->orderBy('permintaan_laundries.tanggal', 'ASC')

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Outlet;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaksi extends Authenticatable
 {
@@ -42,7 +43,8 @@ class Transaksi extends Authenticatable
         'quantity_cuci',
         'kg_cuci',
         'quantity_pengeringan',
-        'kg_pengeringan'
+        'kg_pengeringan',
+        'corporate_id'
     ];
 
     /**
@@ -68,6 +70,6 @@ class Transaksi extends Authenticatable
     }
 
     public function outlet() {
-        return $this->belongsTo('App\Models\Outlet', 'outlet_id', 'id');
+        return $this->belongsTo(Outlet::class, 'outlet_id', 'id');
     }
 }

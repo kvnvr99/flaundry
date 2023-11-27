@@ -72,7 +72,18 @@
                 {data: 'DT_RowIndex', name: 'id'},
                 {data: 'kode_transaksi', name: 'kode_transaksi'},
                 {data: 'nama', name: 'nama'},
-                {data: 'outlet.nama', name: 'outlet.nama'},
+                {
+                    data: 'outlet.nama',
+                    name: 'outlet.nama',
+                    render: function (data, type, row) {
+                        // Check if outlet is empty
+                        if (!row.outlet || !row.outlet.nama) {
+                            return 'transaksi corporate';
+                        } else {
+                            return row.outlet.nama;
+                        }
+                    }
+                },
                 {data: 'items', name: 'items'},
                 {data: 'total', name: 'total'},
                 {data: 'quantity_satuan', name: 'quantity_satuan'},

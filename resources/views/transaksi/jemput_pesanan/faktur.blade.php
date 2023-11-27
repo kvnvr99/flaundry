@@ -44,9 +44,9 @@
         <div class="member-info">Tanggal Keluar : -</div>
     </span>
     <hr>
-    <span>
+    {{-- <span>
         <div class="member-info">Asal Outlet : {{ $data->outlet->nama }}</div>
-    </span>
+    </span> --}}
     <hr>
     <br>
     <div style="text-align: center;">

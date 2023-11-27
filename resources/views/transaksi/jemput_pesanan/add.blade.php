@@ -56,12 +56,12 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
-                            <form method="POST" id="form-transaksi" enctype="multipart/form-data" action="{{ route('registrasi.store') }}">
+                            <form method="POST" id="form-transaksi" enctype="multipart/form-data" action="{{ route('jemput_pesanan.store') }}">
                                 @csrf
                                 <div class="row">
                                     <label class="col-md-3 col-form-label">Gambar Cucian</label>
                                     @foreach ($images as $val)
-                                        <span class="pip"><img class="thumbnail" src="{{ url('storage/app/public/transaksi/penjemputan/TJTXmZtg9IGTfTZxvcYQCqbZosliXe30MHbRQ2OK.jpg') }}"></span>
+                                        <span class="pip"><img class="thumbnail" src="{{ asset('storage/'). '/' . $val->image}}"></span>
                                     @endforeach
                                 </div>
                                 <br><br><br>
@@ -92,7 +92,7 @@
                                             <label class="col-md-3 col-form-label" for="nama">Nama</label>
                                             <div class="col-md-9">
                                                 <input readonly type="text" class="form-control data-pelanggan first-outlet" id="nama" name="nama" value="{{ $info->nama }}" readonly>
-                                                <input type="hidden" class="form-control" id="member_id" name="member_id" value="{{ $info->member_id }}">
+                                                <input type="hidden" class="form-control" id="corporate_id" name="corporate_id" value="{{ $info->corporate_id }}">
                                                 <input type="hidden" class="form-control" id="permintaan_laundry_id" name="permintaan_laundry_id" value="{{ $info->id }}">
                                             </div>
                                         </div>
@@ -206,7 +206,7 @@
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="bayar">Bayar</label>
                                             <div class="col-md-9">
-                                                <input readonly type="text" class="form-control first-outlet" id="bayar" name="bayar" autocomplete="off" onkeypress="return isNumber(event)">
+                                                <input type="text" class="form-control first-outlet" id="bayar" name="bayar" autocomplete="off" onkeypress="return isNumber(event)">
                                             </div>
                                         </div>
                                     </div>
@@ -583,7 +583,7 @@
                 scrollX: true,
                 // bDestroy: true,
                 ajax: {
-                    url: "{!! route('request-laundry.get-data-layanan') !!}",
+                    url: "{!! route('jemput_pesanan.get-data-layanan') !!}",
                     type: "POST",
                     dataType: "JSON",
                     data: ({
@@ -824,7 +824,6 @@
 
         $("#form-transaksi").validate({
             rules: {
-                outlet: { required: true },
                 kategori: { required: true },
                 pelanggan: { required: true },
                 pembayaran: { required: true },
@@ -833,7 +832,6 @@
                 alamat: { required: true }
             },
             messages: {
-                outlet: { required: "Pilih outlet" },
                 kategori: { required: "Pilih kategori" },
                 pelanggan: { required: "Pilih kategori pelanggan" },
                 pembayaran: { required: "Pilih metode pembayaran" },
@@ -847,15 +845,15 @@
                 $('#loading').css("display", "block");
                 $.ajax({
                     type: "POST",
-                    url: `{{ route('request-laundry.store') }}`,
+                    url: `{{ route('jemput_pesanan.store') }}`,
                     data: formData,
                     processData: false,
                     contentType: false,
                     dataType: "JSON",
                     success: function (response) {
                         if (response.status == true) {
-                            let print_home          = `{{ url('request-laundry') }}`;
-                            let print_url           = `{{ url('request-laundry/print') }}`;
+                            let print_home          = `{{ url('jemput-pesanan') }}`;
+                            let print_url           = `{{ url('jemput-pesanan/print') }}`;
                             let redirect_print_url  = print_url+'/'+response.kode_transaksi;
                             // window.open(print_url,'nama window','width=459,height=1000,toolbar=no,location=no,directories=no,status=no,menubar=no, scrollbars=no,resizable=no,copyhistory=no');
                             window.open(print_home,'_blank');

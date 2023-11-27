@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Transaksi;
 
-use App\Http\Controllers\Controller;
+use DB;
 use Illuminate\Http\Request;
+
+use App\Models\ExpedisiJemput;
+use App\Models\PermintaanLaundry;
+use Spatie\Permission\Models\Role;
+use App\Models\ExpedisiJemputImage;
+use App\Http\Controllers\Controller;
+use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\Hash;
+use RealRashid\SweetAlert\Facades\Alert;
+use Spatie\Permission\Models\Permission;
+use Yajra\DataTables\Facades\DataTables;
 
 use App\Http\Requests\ExpedisiJemputRequest;
 use App\Http\Requests\ExpedisiJemputRequestUpdate;
-use App\Models\ExpedisiJemput;
-use App\Models\ExpedisiJemputImage;
-use App\Repositories\BaseRepository;
-use Yajra\DataTables\Facades\DataTables;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\Hash;
-use RealRashid\SweetAlert\Facades\Alert;
-
-use DB;
 
 class ExpedisiJemputController extends Controller {
 
@@ -34,10 +35,17 @@ class ExpedisiJemputController extends Controller {
 
     public function getData() {
         //belum difilter untuk orang yg menjemput
-        $data = DB::table('permintaan_laundries')
-        ->select("permintaan_laundries.*", "users.name",DB::raw("(case when permintaan_laundries.id IN (select permintaan_laundry_id from expedisi_jemputs) then 'sudah' else '-' end) as status"))
-        ->join('members', 'members.id', '=', 'permintaan_laundries.member_id')
-        ->join('users', 'users.id', '=', 'members.user_id')
+        $data = PermintaanLaundry::select(
+            'permintaan_laundries.*',
+            \DB::raw("(CASE WHEN permintaan_laundries.id IN (SELECT permintaan_laundry_id FROM expedisi_jemputs) THEN 'sudah' ELSE '-' END) AS status"),
+            \DB::raw("CASE WHEN permintaan_laundries.member_id = 0 THEN 'corporate' ELSE 'members' END AS join_type"),
+            \DB::raw("COALESCE(corporate_user.name, users.name) AS name")
+
+        )
+        ->leftJoin('members', 'members.id', '=', 'permintaan_laundries.member_id')
+        ->leftJoin('users', 'users.id', '=', 'members.user_id')
+        ->leftJoin('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id')
+        ->leftJoin('users as corporate_user', 'corporate_user.id', '=', 'corporate.user_id')
         ->whereNull('permintaan_laundries.deleted_at')
         ->orderBy('permintaan_laundries.tanggal', 'ASC')
         ->orderBy('permintaan_laundries.waktu', 'ASC')
@@ -106,11 +114,23 @@ class ExpedisiJemputController extends Controller {
 
     public function edit($id) {
         try {
-            $data['detail'] = DB::table('permintaan_laundries')
-            ->select('permintaan_laundries.*', 'users.name','expedisi_jemputs.titip_saldo', 'expedisi_jemputs.catatan', 'expedisi_jemputs.id as expedisi_jemput_id', 'expedisi_jemputs.image')
-            ->join('members', 'members.id', '=', 'permintaan_laundries.member_id')
-            ->join('users', 'users.id', '=', 'members.user_id')
-            ->join('expedisi_jemputs', 'expedisi_jemputs.permintaan_laundry_id', '=', 'permintaan_laundries.id','left')
+            // $data['detail'] = DB::table('permintaan_laundries')
+            // ->select('permintaan_laundries.*', 'users.name','expedisi_jemputs.titip_saldo', 'expedisi_jemputs.catatan', 'expedisi_jemputs.id as expedisi_jemput_id', 'expedisi_jemputs.image')
+            // ->join('members', 'members.id', '=', 'permintaan_laundries.member_id')
+            // ->join('users', 'users.id', '=', 'members.user_id')
+            // ->join('expedisi_jemputs', 'expedisi_jemputs.permintaan_laundry_id', '=', 'permintaan_laundries.id','left')
+            // ->where('permintaan_laundries.id',$id)
+            // ->get();
+            $data['detail'] = PermintaanLaundry::select(
+                'permintaan_laundries.*', 'expedisi_jemputs.titip_saldo', 'expedisi_jemputs.catatan', 'expedisi_jemputs.id as expedisi_jemput_id', 'expedisi_jemputs.image',
+                \DB::raw("CASE WHEN permintaan_laundries.member_id = 0 THEN 'corporate' ELSE 'members' END AS join_type"),
+                \DB::raw("COALESCE(corporate_user.name, users.name) AS name"),
+            )
+            ->leftJoin('members', 'members.id', '=', 'permintaan_laundries.member_id')
+            ->leftJoin('users', 'users.id', '=', 'members.user_id')
+            ->leftJoin('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id')
+            ->leftJoin('users as corporate_user', 'corporate_user.id', '=', 'corporate.user_id')
+            ->leftJoin('expedisi_jemputs', 'expedisi_jemputs.permintaan_laundry_id', '=', 'permintaan_laundries.id')
             ->where('permintaan_laundries.id',$id)
             ->get();
 

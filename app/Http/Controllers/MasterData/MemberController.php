@@ -63,14 +63,17 @@ class MemberController extends Controller
     public function store(MemberRequest $request) {
         DB::beginTransaction();
         try {
+            $roles = Role::where('name', 'Member')->first();
             $user = $request->except(['_token', '_method', 'id', 'phone', 'address', 'balance']);
             $user['password'] = Hash::make($request->password);
             $user['qr_code'] = Hash::make($request->password);
             $user['is_member'] = '1';
+            $user['role_id'] = $roles->id;
             $user_id = $this->user->store($user);
+            $user_id->syncRoles($roles->id);
 
             $member = $request->except(['_token', '_method', 'id', 'email', 'password', 'name']);
-            $member['created_by'] = Auth::user()->name;
+            $member['created_by'] = Auth::user()->id;
             $member['user_id'] = $user_id->id;
             $member['balance'] = 0;
             $this->model->store($member);
@@ -125,7 +128,7 @@ class MemberController extends Controller
             $this->user->update($request->id, $user);
 
             $member = $request->except(['_token', '_method', 'id', 'email', 'password', 'name']);
-            $member['created_by'] = Auth::user()->name;
+            $member['created_by'] = Auth::user()->id;
             // $member['user_id'] = $user_id->id;
             $this->model->update($request->member_id, $member);
 
@@ -141,7 +144,8 @@ class MemberController extends Controller
 
     public function destroy($id) {
         try {
-            $this->model->softDelete($id);
+            $data = $this->model->softDelete($id);
+            $this->user->softDelete($data->user_id);
             Alert::toast($request->name.' Berhasil Dihapus', 'success');
             return redirect()->route('users');
         } catch (\Throwable $e) {

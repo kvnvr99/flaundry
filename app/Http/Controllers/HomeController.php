@@ -52,11 +52,13 @@ class HomeController extends Controller
             if (Auth::user()->is_corporate==1) {
                 $corporate_info = Corporate::where('user_id', auth()->id())->first();
 
-                $transaksi_terakhir = Transaksi::where('corporate_id', $corporate_info->id)
+                $transaksi_terakhir = Transaksi::select('*')->where('corporate_id', $corporate_info->id)
                     ->orderBy('created_at', 'desc')
                     ->first();
 
-                $history_transaksi = Transaksi::where('corporate_id', $corporate_info->id)
+                    // dd($transaksi_terakhir);
+
+                $history_transaksi = Transaksi::select('*')->where('corporate_id', $corporate_info->id)
                     ->orderBy('created_at', 'desc')
                     ->first();
 
