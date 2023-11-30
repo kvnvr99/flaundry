@@ -183,13 +183,6 @@
                     </a>
                     <div class="collapse" id="expedisi">
                         <ul class="nav-second-level">
-                            @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jemput_pesanan']))
-                            <li>
-                                <a href="{{ route('jemput_pesanan') }}">
-                                    <span>Jemput Pesanan</span>
-                                </a>
-                            </li>
-                            @endif
                             @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jadwal-jemput']))
                             <li>
                                 <a href="{{ route('expedisi-jadwal-jemput') }}">
@@ -201,6 +194,13 @@
                             <li>
                                 <a href="{{ route('expedisi-jemput') }}">
                                     <span>Jemput Barang</span>
+                                </a>
+                            </li>
+                            @endif
+                            @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jemput_pesanan']))
+                            <li>
+                                <a href="{{ route('jemput_pesanan') }}">
+                                    <span>Jemput Pesanan</span>
                                 </a>
                             </li>
                             @endif
