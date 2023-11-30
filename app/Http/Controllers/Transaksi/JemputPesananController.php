@@ -70,11 +70,8 @@ class JemputPesananController extends Controller
     }
 
     public function getDataLayanan(Request $request) {
-        if ($request->member == 'member') {
-            $data = Harga::select('id','kode','nama','harga_member', 'jenis_item')->where('kategori', $request->kategori);
-        } else {
-            $data = Harga::select('id','kode','nama','harga','jenis_item')->where('kategori', $request->kategori);
-        }
+        // $data = Harga::select('id','kode','nama','harga','jenis_item')->where('kategori', $request->kategori);
+        $data = Harga::select('id','kode','nama','harga','jenis_item');
         return DataTables::of($data)
         ->addColumn('harga', function ($data) {
             if (isset($data->harga_member)){

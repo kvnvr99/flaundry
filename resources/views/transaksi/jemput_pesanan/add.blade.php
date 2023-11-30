@@ -67,21 +67,6 @@
                                 <br><br><br>
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label">Kategori Layanan</label>
-                                            <div class="col-md-9">
-                                                <div class="selectize-control multi">
-                                                    <div class="selectize-input items not-full has-options has-items">
-                                                        <div class="select-input item" data-value="reguler">REG</div>
-                                                        <div class="select-input item" data-value="express">EXPRESS</div>
-                                                        <div class="select-input item" data-value="super_express">SUPER EXPRESS</div>
-                                                        <input type="text" autocomplete="off" tabindex="" id="selectize-tags-selectized" style="width: 4px; opacity: 0; position: absolute; left: -10000px;"></div>
-                                                        <div class="selectize-dropdown multi" style="display: none;"><div class="selectize-dropdown-content"></div>
-                                                    </div>
-                                                </div>
-                                                <input type="text" name="kategori" id="selectize-tags" tabindex="-1" class="selectized" style="display: none;" value=>
-                                            </div>
-                                        </div>
                                         <div class="form-group row mb-3" style="display:none;">
                                             <label class="col-md-3 col-form-label">Kategori Pelanggan</label>
                                             <div class="col-md-9">
@@ -565,11 +550,6 @@
             e.preventDefault();
             let kategori_layanan = $('#selectize-tags').val();
             let pelanggan = $('#selectize-pelanggan').val();
-            if(kategori_layanan == ''){
-                $('#modal-layanan').modal('hide');
-                Swal.fire("Warning!", "Silahkan Pilih Kategori Layanan.", "warning");
-                return false;
-            }
             let index_row = $(this).parent().parent().attr('childidx');
             let table = $('#state-saving-datatable-layanan').DataTable();
             table.destroy();
@@ -856,7 +836,7 @@
                             let print_url           = `{{ url('jemput-pesanan/print') }}`;
                             let redirect_print_url  = print_url+'/'+response.kode_transaksi;
                             // window.open(print_url,'nama window','width=459,height=1000,toolbar=no,location=no,directories=no,status=no,menubar=no, scrollbars=no,resizable=no,copyhistory=no');
-                            window.open(print_home,'_blank');
+                            // window.open(print_home, '_blank');
                             window.open(redirect_print_url, '_blank');
                             window.close();
                             // setTimeout(function () { window.location.reload(true); }, 500);
