@@ -141,7 +141,7 @@
                                                         <th class="text-center" width="15%">Nama Layanan</th>
                                                         <th class="text-center" width="15%">Harga Satuan</th>
                                                         <th class="text-center">Quantity</th>
-                                                        <th class="text-center">Quantity Special Treatment</th>
+                                                        <th class="text-center">Quantity Return</th>
                                                         <th class="text-center" width="15%">Total</th>
                                                         <th class="text-center action-buton" width="4%">Aksi</th>
                                                     </tr>
@@ -168,7 +168,7 @@
                                         <button type="button" class="btn btn-dark btn-square triggerLayanan">Tambah Layanan</button>
                                     </div>
                                 </div>
-                                <br>
+                                {{-- <br>
                                 <br>
                                 <br>
                                 <div class="row">
@@ -195,7 +195,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div style="float: right;" class="row mt-5">
                                     <ul class="list-inline wizard mb-0">
                                         <li class="next list-inline-item float-right">
@@ -225,6 +225,7 @@
             <span class="layanan_harga_label">
             </span>
 			<input data-toggle="modal" readonly class="form-control text-left show-layanan layanan_harga" type="hidden" name="layanan[0][harga]" autocomplete="off" />
+			<input data-toggle="modal" readonly class="form-control text-left show-layanan kode_layanan" type="hidden" name="layanan[0][kode_layanan]" autocomplete="off" />
         </td>
 		<td class="text-center no-padding">
 			<input class="form-control text-left no-padding layanan_qty_satuan" required readonly style="background-color: #f5f5f5;" maxlength="9" type="text" name="layanan[0][qty_satuan]" autocomplete="off" onkeypress="return isNumber(event)" />
@@ -612,10 +613,11 @@
             this_row.find(".form-control").css('background-color', '#FFF');
             this_row.find('.layanan_nama_label').html(nama);
             let harga_label = numberFormater(parseInt(harga));
-            this_row.find('.layanan_harga_label').html('Rp. '+harga_label + '/' + jenis_item);
+            this_row.find('.layanan_harga_label').html('Rp. '+harga_label);
             this_row.find('.layanan_id').val(id);
             this_row.find('.layanan_nama').val(nama);
             this_row.find('.layanan_harga').val(harga);
+            this_row.find('.kode_layanan').val(kode);
 
             let sum = 0;
             $(document).find(".layanan_harga").each(function(){
@@ -683,36 +685,12 @@
             if (/^0/.test(this.value)) {
                 this.value = this.value.replace(/^0/, "")
             }
-            let this_row = $(this).parent().parent();
-
-            let harga = this_row.find('.layanan_harga').val() || 0;
-            let quantity = this_row.find('.layanan_qty_satuan').val() || 0;
-
-            let layanan_qty_special_treatment = this_row.find('.layanan_qty_special_treatment').val() || 0;
-            let layanan_harga_special_treatment = this_row.find('.layanan_harga_special_treatment').val() || 0;
-            let total_special_treatment = parseInt(layanan_qty_special_treatment) * parseInt(layanan_harga_special_treatment) || 0;
-
-            if (layanan_harga_special_treatment >= 0 && quantity >= 0 && layanan_qty_special_treatment >= 0) {
-                let total_harga = parseInt(harga) * parseInt(quantity);
-                let sub_total_harga_this_row = parseInt(total_harga) + parseInt(total_special_treatment) || 0;
-
-                let sub_total_harga_this_row_label = numberFormater(parseInt(sub_total_harga_this_row));
-                this_row.find('.layanan_total_label').html('Rp. '+sub_total_harga_this_row_label);
-                this_row.find('.layanan_total').val(sub_total_harga_this_row);
 
                 let sum = 0;
                 $(document).find(".layanan_qty_special_treatment").each(function(){
                     sum += +$(this).val();
                 });
                 $(".sub_special_teatment_qty_satuan").html(sum);
-
-                let sum_total = 0;
-                $(document).find(".layanan_total").each(function(){
-                    sum_total += +$(this).val();
-                });
-                sum_total = numberFormater(sum_total);
-                $(".sub_all_qty_harga").html(sum_total);
-            }
         });
 
         // $(document).on('keyup', '.layanan_harga_special_treatment', function (e) {
@@ -836,9 +814,8 @@
                             let print_url           = `{{ url('jemput-pesanan/print') }}`;
                             let redirect_print_url  = print_url+'/'+response.kode_transaksi;
                             // window.open(print_url,'nama window','width=459,height=1000,toolbar=no,location=no,directories=no,status=no,menubar=no, scrollbars=no,resizable=no,copyhistory=no');
-                            // window.open(print_home, '_blank');
                             window.open(redirect_print_url, '_blank');
-                            window.close();
+                            window.location.href = print_home;
                             // setTimeout(function () { window.location.reload(true); }, 500);
                         } else {
                             if (response.err == 'empty_layanan') {

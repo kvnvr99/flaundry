@@ -69,23 +69,23 @@
         @php
             $sum_quantity = array_sum(array_column($data->TransaksiDetail->toArray(), 'jumlah'));
             $sum_harga = array_sum(array_column($data->TransaksiDetail->toArray(), 'harga_jumlah'));
-            $sum_quantity_st = array_sum(array_column($data->TransaksiDetail->toArray(), 'qty_special_treatment'));
-            $sum_harga_st = array_sum(array_column($data->TransaksiDetail->toArray(), 'harga_jumlah_special_treatment'));
+            // $sum_quantity_st = array_sum(array_column($data->TransaksiDetail->toArray(), 'qty_special_treatment'));
+            // $sum_harga_st = array_sum(array_column($data->TransaksiDetail->toArray(), 'harga_jumlah_special_treatment'));
         @endphp
         <tr>
             <th>Total Item</th>
             <th class="item">{{ $sum_quantity }}</th>
             <th class="item">{{ number_format($sum_harga, 2, ",", ".") }}</th>
         </tr>
-        <tr>
-            <th>Special Treatment</th>
+        {{-- <tr>
+            <th>Quantity Return</th>
             <th class="item">{{ $sum_quantity_st }}</th>
-            <th class="item">{{ number_format($sum_harga_st, 2, ",", ".") }}</th>
-        </tr>
+            <th class="item"></th>
+        </tr> --}}
         <tr>
             <th>Sub Total</th>
-            <th class="item">{{ $sum_quantity+$sum_quantity_st }}</th>
-            <th class="item">{{ number_format($sum_harga+$sum_harga_st, 2, ",", ".") }}</th>
+            <th class="item">{{ $sum_quantity }}</th>
+            <th class="item">{{ number_format($sum_harga, 2, ",", ".") }}</th>
         </tr>
     </table>
     <br><br><br><br>

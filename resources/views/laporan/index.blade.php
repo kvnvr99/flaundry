@@ -143,6 +143,26 @@
                     </div> <!-- end widget-rounded-circle-->
                 </a> <!-- end col-->
 
+                <a class="col-md-4 col-xl-3" href="{{ route('laporan.corporate') }}">
+                    <div class="widget-rounded-circle card-box">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="text-center">
+                                    <img src="../assets/images/laundry/absen.png" style="height:100px;" alt="user-img" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="text-center">
+                                    <p class="text-muted mb-1 text-truncate">&nbsp;</p>
+                                    <h4 class="mt-1">REKAP CORPORATE</h4>
+                                </div>
+                            </div>
+                        </div> <!-- end row-->
+                    </div> <!-- end widget-rounded-circle-->
+                </a> <!-- end col-->
+
             </div><!-- end row-->
 
 

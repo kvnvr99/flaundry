@@ -117,12 +117,13 @@ class JemputPesananController extends Controller
                 $transaksi_detail = [
                     "transaksi_id" => $transaksi->id,
                     "harga_id" => $layanan['id'],
+                    "kode_layanan" => $layanan['kode_layanan'],
                     "jumlah" => $layanan['qty_satuan'],
                     "harga_satuan" => $layanan['harga'],
                     "harga_jumlah" => $layanan['qty_satuan'] * $layanan['harga'],
                     "qty_special_treatment" => $layanan['qty_special_treatment'],
                     "harga_special_treatment" => $layanan['harga_special_treatment'],
-                    'harga_jumlah_special_treatment' => $layanan['qty_special_treatment'] * $layanan['harga_special_treatment'],
+                    'harga_jumlah_special_treatment' => 0,
                     "total" => $layanan['total']
                 ];
                 $detail [] = TransaksiDetail::create($transaksi_detail);

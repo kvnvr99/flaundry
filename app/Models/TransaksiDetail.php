@@ -21,6 +21,7 @@ class TransaksiDetail extends Authenticatable
     protected $fillable = [
         'transaksi_id',
         'harga_id',
+        'kode_layanan',
         'jumlah',
         'harga_satuan',
         'harga_jumlah',

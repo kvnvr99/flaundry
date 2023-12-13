@@ -35,10 +35,11 @@ use App\Http\Controllers\Laporan\LaporanExpedisiController;
 use App\Http\Controllers\Transaksi\ExpedisiAntarController;
 use App\Http\Controllers\Transaksi\JemputPesananController;
 use App\Http\Controllers\Transaksi\RekapComplainController;
+use App\Http\Controllers\Laporan\LaporanCorporateController;
 use App\Http\Controllers\Member\PermintaanLaundryController;
 use App\Http\Controllers\Transaksi\ExpedisiJemputController;
-use App\Http\Controllers\Transaksi\RequestLaundryController;
 
+use App\Http\Controllers\Transaksi\RequestLaundryController;
 use App\Http\Controllers\Infogram\InfogramExpedisiController;
 use App\Http\Controllers\Laporan\LaporanFrenchaiseController;
 use App\Http\Controllers\Transaksi\ExpedisiJadwalAntarController;
@@ -347,7 +348,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [LaporanFrenchaiseController::class, 'index'])->name('laporan-frenchaise');
         Route::post('/get-data', [LaporanFrenchaiseController::class, 'getData'])->name('laporan-frenchaise.get-data');
     });
-
+    
     Route::prefix('infogram-expedisi')->middleware(['role_or_permission:Maintener|infogram'])->group(function () {
         Route::get('/', [InfogramExpedisiController::class, 'index'])->name('infogram-expedisi');
         Route::post('/get-data', [InfogramExpedisiController::class, 'getData'])->name('infogram-expedisi.get-data');
@@ -365,6 +366,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/get-data-info', [RekapComplainController::class, 'getDataInfo'])->name('rekap-complain.get-data-info');
     });
 
+
+    Route::prefix('laporan/corporate')->middleware(['role_or_permission:Maintener|laporan'])->group(function () {
+        Route::get('/', [LaporanCorporateController::class, 'index'])->name('laporan.corporate');
+        Route::post('/getData', [LaporanCorporateController::class, 'getData'])->name('laporan.corporate.getData');
+        Route::get('/detail/{id}', [LaporanCorporateController::class, 'detail'])->name('laporan.corporate.detail');
+    });
 
 });
 
