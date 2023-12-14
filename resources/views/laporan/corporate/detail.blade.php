@@ -11,10 +11,18 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <p><strong>{{$corporate->user->name . ' - ' . $corporate->address}}</strong></p>
-                            <p><strong>PERIODE : {{date('M Y',strtotime(request()->input('startdate')))}} - {{date('M Y',strtotime(request()->input('enddate')))}}</strong></p>
-                            <p><strong>MONTHLY LAUNDRY</strong></p>
-                            <p><strong>FRUITS LAUNDRY</strong></p>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p><strong>{{$corporate->user->name . ' - ' . $corporate->address}}</strong></p>
+                                    <p><strong>PERIODE : {{date('M Y',strtotime(request()->input('startdate')))}} - {{date('M Y',strtotime(request()->input('enddate')))}}</strong></p>
+                                    <p><strong>MONTHLY LAUNDRY</strong></p>
+                                    <p><strong>FRUITS LAUNDRY</strong></p>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <a href="#" class="btn btn-success">Export Excel</a>
+                                    <a href="#" class="btn btn-danger">Export Pdf</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -29,30 +37,23 @@
                                       <th width="25px" rowspan="2" class="text-center align-middle">No</th>
                                       <th width="" rowspan="2" class="text-center align-middle">Date</th>
                                       <th width="" rowspan="2" class="text-center align-middle">Time</th>
-                                      <th width="" colspan="4" class="text-center">Bath Towel/Handuk Besar</th>
-                                      <th width="" colspan="4" class="text-center">Hand Towel/Handuk Kecil</th>
+                                      @foreach ($harga_layanan as $row)
+                                      <th width="" colspan="4" class="text-center">{{$row->nama}}</th>
+                                      @endforeach
 
-                                      <th width="" colspan="3" class="text-center">Shower Curtain</th>
                                     </tr>
                                     <tr>
+                                      @foreach ($harga_layanan as $row)
                                       <th width="">Send</th>
                                       <th width="">Return</th>
                                       <th width="">Rewash</th>
                                       <th width="">Remark</th>
-                                      <th width="">Send</th>
-                                      <th width="">Return</th>
-                                      <th width="">Rewash</th>
-                                      <th width="">Remark</th>
-                                      
-                                      <th width="">Send</th>
-                                      <th width="">Return</th>
-                                      <th width="">Remark</th>
+                                      @endforeach
                                     </tr>
                                   </thead>
                                 <tbody>
                                     @foreach ($data as $key => $col)
                                     @foreach ($col->TransaksiDetail as $index => $item)
-                                    @if ($item->kode_layanan == 'handuk_besar' || $item->kode_layanan == 'handuk_kecil' || $item->kode_layanan == 'shower_curtain')
                                     <tr>
                                             <td>
                                                 {{$index == 0 ? ($key + 1) : ''}}
@@ -64,21 +65,13 @@
                                                 {{$index == 0 ? date('H:i:s', strtotime($col->created_at)) : ''}}
                                             </td>
                                             
-                                            <td class="text-right totalTowel-1-item" id="totalTowel-{{ $item->kode_layanan == 'handuk_besar' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'handuk_besar' ? ($item->jumlah ?? 0) : 0 }}</td>
-                                            <td class="text-right totalReturn-1-item" id="totalReturn-{{ $item->kode_layanan == 'handuk_besar' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'handuk_besar' ? ($item->qty_special_treatment ?? 0) : 0 }}</td>
-                                            <td class="text-right totalRewash-1-item" id="totalRewash-{{ $item->kode_layanan == 'handuk_besar' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'handuk_besar' ? ($item->qty_rewash ?? 0) : 0 }}</td>
-                                            <td class="text-right totalRemark-1-item" id="totalRemark-{{ $item->kode_layanan == 'handuk_besar' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'handuk_besar' ? ($item->qty_remark ?? 0) : 0 }}</td>
-                                            
-                                            <td class="text-right totalTowel-2-item" id="totalTowel-{{ $item->kode_layanan == 'handuk_kecil' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'handuk_kecil' ? ($item->jumlah ?? 0) : 0 }}</td>
-                                            <td class="text-right totalReturn-2-item" id="totalReturn-{{ $item->kode_layanan == 'handuk_kecil' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'handuk_kecil' ? ($item->qty_special_treatment ?? 0) : 0 }}</td>
-                                            <td class="text-right totalRewash-2-item" id="totalRewash-{{ $item->kode_layanan == 'handuk_kecil' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'handuk_kecil' ? ($item->qty_rewash ?? 0) : 0 }}</td>
-                                            <td class="text-right totalRemark-2-item" id="totalRemark-{{ $item->kode_layanan == 'handuk_kecil' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'handuk_kecil' ? ($item->qty_remark ?? 0) : 0 }}</td>
-
-                                            <td class="text-right totalTowel-3-item" id="totalTowel-{{ $item->kode_layanan == 'shower_curtain' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'shower_curtain' ? ($item->jumlah ?? 0) : 0 }}</td>
-                                            <td class="text-right totalReturn-3-item" id="totalReturn-{{ $item->kode_layanan == 'shower_curtain' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'shower_curtain' ? ($item->qty_special_treatment ?? 0) : 0 }}</td>
-                                            <td class="text-right totalRemark-3-item" id="totalRemark-{{ $item->kode_layanan == 'shower_curtain' ? $item->kode_layanan : '' }}">{{ $item->kode_layanan == 'shower_curtain' ? ($item->qty_remark ?? 0) : 0 }}</td>
+                                            @foreach ($harga_layanan as $count => $row)
+                                            <td class="text-right totalTowel-{{$count}}-item" id="totalTowel-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->jumlah ?? 0) : 0 }}</td>
+                                            <td class="text-right totalReturn-{{$count}}-item" id="totalReturn-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_special_treatment ?? 0) : 0 }}</td>
+                                            <td class="text-right totalRewash-{{$count}}-item" id="totalRewash-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_rewash ?? 0) : 0 }}</td>
+                                            <td class="text-right totalRemark-{{$count}}-item" id="totalRemark-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_remark ?? 0) : 0 }}</td>
+                                            @endforeach
                                         </tr>
-                                        @endif
                                         @endforeach
                                         @endforeach
                                         @if (!$data)
@@ -91,14 +84,12 @@
                                     <tr>
                                         <th colspan="3" class="text-center align-middle">TOTAL TOWEL</th>
 
-                                        @for ($i = 1; $i < 4; $i++)
-                                        <th class="text-right" id="totalTowel-{{$i}}"></th>
-                                        <th class="text-right" id="totalReturn-{{$i}}"></th>
-                                        @if ($i < 3)
-                                        <th class="text-right" id="totalRewash-{{$i}}"></th>
-                                        @endif
-                                        <th class="text-right" id="totalRemark-{{$i}}"></th>
-                                        @endfor
+                                        @foreach ($harga_layanan as $key => $row)
+                                        <th class="text-right" id="totalTowel-{{$key}}"></th>
+                                        <th class="text-right" id="totalReturn-{{$key}}"></th>
+                                        <th class="text-right" id="totalRewash-{{$key}}"></th>
+                                        <th class="text-right" id="totalRemark-{{$key}}"></th>
+                                        @endforeach
 
 
                                     </tr>
@@ -125,36 +116,14 @@
                                     </tr>
                                   </thead>
                                 <tbody>
+                                    @foreach ($harga_layanan as $key => $row)
                                     <tr>
-                                        <td>Bath Towel</td>
-                                        <td class="text-right" id="payTotalTowel-1">0</td>
-                                        <td class="text-right">Rp 1.600</td>
-                                        <td class="text-right" id="ammount-1">Rp 0</td>
+                                        <td>{{$row->nama}}</td>
+                                        <td class="text-right towel-{{$key}}-item" id="payTotalTowel-1">0</td>
+                                        <td class="text-right price-{{$key}}-item">Rp {{number_format($row->harga, 0, ',', '.')}}</td>
+                                        <td class="text-right amount-{{$key}}-item" id="ammount-1">Rp 0</td>
                                     </tr>
-                                    <tr>
-                                        <td>Hand Towel</td>
-                                        <td class="text-right" id="payTotalTowel-2">300</td>
-                                        <td class="text-right">Rp 700</td>
-                                        <td class="text-right" id="ammount-2">Rp 0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Hammock</td>
-                                        <td class="text-right">-</td>
-                                        <td class="text-right">######</td>
-                                        <td class="text-right">-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Shower Curtain</td>
-                                        <td class="text-right" id="payTotalTowel-3">-</td>
-                                        <td class="text-right">Rp 3.500</td>
-                                        <td class="text-right" id="ammount-3">-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Matras</td>
-                                        <td class="text-right">-</td>
-                                        <td class="text-right">Rp 8.000</td>
-                                        <td class="text-right">-</td>
-                                    </tr>
+                                    @endforeach
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -183,56 +152,61 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>
 <script>
     $(document).ready(function () {
-    // Function to calculate and update totals
-    var totalAmmount = 0;
-    for (let index = 1; index < 4; index++) {
-        function updateTotals() {
-        var totalTowel = 0;
-        var totalReturn = 0;
-        var totalRewash = 0;
-        var totalRemark = 0;
 
-        // Iterate through each row in the tbody
-        $('tbody tr').each(function () {
-            var $row = $(this);
+        $.ajax({
+            type: "get",
+            url: `{{ route('laporan.corporate.detail', $id) }}?startdate={{ request()->input('startdate') }}&enddate={{ request()->input('enddate') }}&getDataHargaLayanan=true`,
+            processData: false,
+            contentType: false,
+            dataType: "JSON",
+            success: function (response) {
+                let datas = response.data;
+                var totalAmmount = 0;
+                for (let index = 0; index < datas.length; index++) {
+                    const data = datas[index];
+                    
+                    // Function to calculate and update totals
+                    function updateTotals() {
+                        var totalTowel = 0;
+                        var totalReturn = 0;
+                        var totalRewash = 0;
+                        var totalRemark = 0;
 
-            // Extract values from the row and update totals
-            totalTowel += parseFloat($row.find('.totalTowel-' + index + '-item').text()) || 0;
-            totalReturn += parseFloat($row.find('.totalReturn-' + index + '-item').text()) || 0;
-            totalRewash += parseFloat($row.find('.totalRewash-' + index + '-item').text()) || 0;
-            totalRemark += parseFloat($row.find('.totalRemark-' + index + '-item').text()) || 0;
+                        // Iterate through each row in the tbody
+                        $('tbody tr').each(function () {
+                            var $row = $(this);
+
+                            // Extract values from the row and update totals
+                            totalTowel += parseFloat($row.find('.totalTowel-' + index + '-item').text()) || 0;
+                            totalReturn += parseFloat($row.find('.totalReturn-' + index + '-item').text()) || 0;
+                            totalRewash += parseFloat($row.find('.totalRewash-' + index + '-item').text()) || 0;
+                            totalRemark += parseFloat($row.find('.totalRemark-' + index + '-item').text()) || 0;
+                        });
+
+                        // Update the totals in the tfoot
+                        $('#totalTowel-' + index).text(totalTowel);
+                        $('#totalReturn-' + index).text(totalReturn);
+                        $('#totalRewash-' + index).text(totalRewash);
+                        $('#totalRemark-' + index).text(totalRemark);
+
+                        $('.towel-' + index + '-item').text(totalTowel);
+                        var amount = parseInt(totalTowel) * data.harga;
+                        console.log(amount);
+                        $('.amount-' + index + '-item').text(formatCurrency(amount));
+                        totalAmmount += amount;
+                    }
+
+                    // Call the function to update totals initially
+                    updateTotals();
+                }
+
+                $('#totalAmmount').text(formatCurrency(totalAmmount));
+            },
+            error: function (request, status, error) {
+                
+            }
         });
-
-        // Update the totals in the tfoot
-        $('#totalTowel-' + index).text(totalTowel);
-        $('#totalReturn-' + index).text(totalReturn);
-        $('#totalRewash-' + index).text(totalRewash);
-        $('#totalRemark-' + index).text(totalRemark);
-
-        // Update the payment amount based on the totalTowel and the price in the payment table
-        var price = 0;
-        switch (index) {
-            case 1:
-                price = 1600;
-                break;
-            case 2:
-                price = 700;
-                break;
-            case 3:
-                price = 3500;
-                break;
-            // Add more cases if needed for other indexes
-        }
-
-        $('#payTotalTowel-' + index).text(totalTowel);
-        var amount = totalTowel * price;
-        $('#ammount-' + index).text(formatCurrency(amount));
-        totalAmmount += amount;
-        }
-
-        // Call the function to update totals initially
-        updateTotals();
-    }
+    
     $('#totalAmmount').text(formatCurrency(totalAmmount));
     // Function to format number as Rupiah currency
     function formatCurrency(number) {

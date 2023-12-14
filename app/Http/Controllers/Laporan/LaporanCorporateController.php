@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Laporan;
 
 use DataTables;
 use Carbon\Carbon;
+use App\Models\Harga;
 use App\Models\Corporate;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
@@ -17,9 +18,9 @@ class LaporanCorporateController extends Controller
 
     public function getData(Request $request) {
         $data = Corporate::select('corporate.*', 'users.name')
-            ->leftJoin('transaksis', 'transaksis.corporate_id', '=', 'corporate.id')
+            // ->leftJoin('transaksis', 'transaksis.corporate_id', '=', 'corporate.id')
             ->leftJoin('users', 'users.id', '=', 'corporate.user_id')
-            ->groupBy('corporate.id')
+            // ->groupBy('corporate.id','corporate.user_id')
             ->get();
     
         return DataTables::of($data)
@@ -35,9 +36,9 @@ class LaporanCorporateController extends Controller
 
     public function detail($id, Request $request)
     {
-        $data = Transaksi::with('TransaksiDetail')
-            ->where('transaksis.corporate_id', $id)
-            ->groupBy('transaksis.id');
+        $id = $id;
+        $data = Transaksi::with('transaksiDetail')
+            ->where('transaksis.corporate_id', $id);
 
         // Check if startdate and enddate are provided in the request
         if ($request->filled('startdate') && $request->filled('enddate')) {
@@ -45,7 +46,7 @@ class LaporanCorporateController extends Controller
             $endDate = Carbon::createFromFormat('M-Y', $request->enddate)->endOfMonth();
 
             $data->whereBetween('transaksis.created_at', [$startDate, $endDate]);
-        }else{
+        } else {
             return redirect(route('laporan.corporate'));
         }
 
@@ -53,7 +54,25 @@ class LaporanCorporateController extends Controller
 
         $corporate = Corporate::with('user')->find($id);
 
-        return view('laporan.corporate.detail', compact('data', 'corporate'));
+        // Retrieve the unique harga_id values from transaksi_detail
+        $hargaIds = $data->pluck('transaksiDetail.*.harga_id')->flatten()->unique()->toArray();
+
+        // Fetch the corresponding harga_layanan records
+        $harga_layanan = Harga::whereIn('id', $hargaIds)->get();
+
+        if ($request->has('getDataHargaLayanan')) {
+            return response()->json([
+                'data' => $harga_layanan
+            ]);
+        }
+
+        return view('laporan.corporate.detail', compact('id','data', 'corporate', 'harga_layanan'));
+    }
+
+
+
+    public function getDataHarga(){
+
     }
 
     
