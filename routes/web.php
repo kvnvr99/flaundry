@@ -371,6 +371,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [LaporanCorporateController::class, 'index'])->name('laporan.corporate');
         Route::post('/getData', [LaporanCorporateController::class, 'getData'])->name('laporan.corporate.getData');
         Route::get('/detail/{id}', [LaporanCorporateController::class, 'detail'])->name('laporan.corporate.detail');
+        Route::get('/exportExcel', [LaporanCorporateController::class, 'exportExcel'])->name('laporan.corporate.exportExcel');
+        Route::get('/exportPdf', [LaporanCorporateController::class, 'exportPdf'])->name('laporan.corporate.exportPdf');
     });
 
 });

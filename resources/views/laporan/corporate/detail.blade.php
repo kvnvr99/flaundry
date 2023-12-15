@@ -19,8 +19,8 @@
                                     <p><strong>FRUITS LAUNDRY</strong></p>
                                 </div>
                                 <div class="col-6 text-right">
-                                    <a href="#" class="btn btn-success">Export Excel</a>
-                                    <a href="#" class="btn btn-danger">Export Pdf</a>
+                                    <a href="javascript:void(0)" class="btn btn-success" id="triggerExportExcel" data-id="{{$corporate->id}}" data-startdate="{{request()->input('startdate')}}" data-enddate="{{request()->input('enddate')}}">Export Excel</a>
+                                    <a href="javascript:void(0)" class="btn btn-danger" id="triggerExportPdf" data-id="{{$corporate->id}}" data-startdate="{{request()->input('startdate')}}" data-enddate="{{request()->input('enddate')}}">Export Pdf</a>
                                 </div>
                             </div>
                         </div>
@@ -31,70 +31,72 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <table id="table" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                      <th width="25px" rowspan="2" class="text-center align-middle">No</th>
-                                      <th width="" rowspan="2" class="text-center align-middle">Date</th>
-                                      <th width="" rowspan="2" class="text-center align-middle">Time</th>
-                                      @foreach ($harga_layanan as $row)
-                                      <th width="" colspan="4" class="text-center">{{$row->nama}}</th>
-                                      @endforeach
-
-                                    </tr>
-                                    <tr>
-                                      @foreach ($harga_layanan as $row)
-                                      <th width="">Send</th>
-                                      <th width="">Return</th>
-                                      <th width="">Rewash</th>
-                                      <th width="">Remark</th>
-                                      @endforeach
-                                    </tr>
-                                  </thead>
-                                <tbody>
-                                    @foreach ($data as $key => $col)
-                                    @foreach ($col->TransaksiDetail as $index => $item)
-                                    <tr>
-                                            <td>
-                                                {{$index == 0 ? ($key + 1) : ''}}
-                                            </td>
-                                            <td>
-                                                {{$index == 0 ? date('d-m-Y', strtotime($col->created_at)) : ''}}
-                                            </td>
-                                            <td>
-                                                {{$index == 0 ? date('H:i:s', strtotime($col->created_at)) : ''}}
-                                            </td>
-                                            
-                                            @foreach ($harga_layanan as $count => $row)
-                                            <td class="text-right totalTowel-{{$count}}-item" id="totalTowel-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->jumlah ?? 0) : 0 }}</td>
-                                            <td class="text-right totalReturn-{{$count}}-item" id="totalReturn-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_special_treatment ?? 0) : 0 }}</td>
-                                            <td class="text-right totalRewash-{{$count}}-item" id="totalRewash-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_rewash ?? 0) : 0 }}</td>
-                                            <td class="text-right totalRemark-{{$count}}-item" id="totalRemark-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_remark ?? 0) : 0 }}</td>
-                                            @endforeach
+                            <div style="overflow-x: scroll">
+                                <table id="table" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                          <th width="min-w-25" rowspan="2" class="text-center align-middle">No</th>
+                                          <th width="min-w-150" rowspan="2" class="text-center align-middle">Date</th>
+                                          <th width="min-w-100" rowspan="2" class="text-center align-middle">Time</th>
+                                          @foreach ($harga_layanan as $row)
+                                          <th width="" colspan="4" class="text-center">{{$row->nama}}</th>
+                                          @endforeach
+    
                                         </tr>
-                                        @endforeach
-                                        @endforeach
-                                        @if (!$data)
-                                            <tr>
-                                                <td colspan="14" class="text-center align-middle">No Data Available</td>
+                                        <tr>
+                                          @foreach ($harga_layanan as $row)
+                                          <th width="">Send</th>
+                                          <th width="">Return</th>
+                                          <th width="">Rewash</th>
+                                          <th width="">Remark</th>
+                                          @endforeach
+                                        </tr>
+                                      </thead>
+                                    <tbody>
+                                        @foreach ($data as $key => $col)
+                                        @foreach ($col->TransaksiDetail as $index => $item)
+                                        <tr>
+                                                <td>
+                                                    {{$index == 0 ? ($key + 1) : ''}}
+                                                </td>
+                                                <td>
+                                                    {{$index == 0 ? date('d-m-Y', strtotime($col->created_at)) : ''}}
+                                                </td>
+                                                <td>
+                                                    {{$index == 0 ? date('H:i:s', strtotime($col->created_at)) : ''}}
+                                                </td>
+                                                
+                                                @foreach ($harga_layanan as $count => $row)
+                                                <td class="text-right totalTowel-{{$count}}-item" id="totalTowel-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->jumlah ?? 0) : 0 }}</td>
+                                                <td class="text-right totalReturn-{{$count}}-item" id="totalReturn-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_special_treatment ?? 0) : 0 }}</td>
+                                                <td class="text-right totalRewash-{{$count}}-item" id="totalRewash-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_rewash ?? 0) : 0 }}</td>
+                                                <td class="text-right totalRemark-{{$count}}-item" id="totalRemark-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_remark ?? 0) : 0 }}</td>
+                                                @endforeach
                                             </tr>
-                                        @endif
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3" class="text-center align-middle">TOTAL TOWEL</th>
-
-                                        @foreach ($harga_layanan as $key => $row)
-                                        <th class="text-right" id="totalTowel-{{$key}}"></th>
-                                        <th class="text-right" id="totalReturn-{{$key}}"></th>
-                                        <th class="text-right" id="totalRewash-{{$key}}"></th>
-                                        <th class="text-right" id="totalRemark-{{$key}}"></th>
-                                        @endforeach
-
-
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                            @endforeach
+                                            @endforeach
+                                            @if (!$data)
+                                                <tr>
+                                                    <td colspan="14" class="text-center align-middle">No Data Available</td>
+                                                </tr>
+                                            @endif
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="3" class="text-center align-middle">TOTAL TOWEL</th>
+    
+                                            @foreach ($harga_layanan as $key => $row)
+                                            <th class="text-right" id="totalTowel-{{$key}}"></th>
+                                            <th class="text-right" id="totalReturn-{{$key}}"></th>
+                                            <th class="text-right" id="totalRewash-{{$key}}"></th>
+                                            <th class="text-right" id="totalRemark-{{$key}}"></th>
+                                            @endforeach
+    
+    
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -206,6 +208,42 @@
                 
             }
         });
+
+    $('#triggerExportExcel').on('click', function() {
+        let params = [];
+
+        if ($(this).data('id')) {
+            params.push('id=' + $(this).data('id'));
+        }
+
+        if ($(this).data('startdate')) {
+            params.push('startdate=' + $(this).data('startdate'));
+        }
+
+        if ($(this).data('enddate')) {
+            params.push('enddate=' + $(this).data('enddate'));
+        }
+
+        window.open('{{route("laporan.corporate.exportExcel")}}' + "?" + params.join('&'), "_blank");
+    });
+
+    $('#triggerExportPdf').on('click', function() {
+        let params = [];
+
+        if ($(this).data('id')) {
+            params.push('id=' + $(this).data('id'));
+        }
+
+        if ($(this).data('startdate')) {
+            params.push('startdate=' + $(this).data('startdate'));
+        }
+
+        if ($(this).data('enddate')) {
+            params.push('enddate=' + $(this).data('enddate'));
+        }
+
+        window.open('{{route("laporan.corporate.exportPdf")}}' + "?" + params.join('&'), "_blank");
+    });
     
     $('#totalAmmount').text(formatCurrency(totalAmmount));
     // Function to format number as Rupiah currency
