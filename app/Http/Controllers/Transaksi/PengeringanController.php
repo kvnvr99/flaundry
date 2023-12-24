@@ -116,7 +116,7 @@ class PengeringanController extends Controller {
     public function store(Request $request) {
 
         try {
-            $this->validate($request, [ 'quantity_satuan' => 'required|numeric', 'quantity_kg' => 'required|numeric' ]);
+            $this->validate($request, [ 'quantity_satuan' => 'required|numeric' ]);
             $data = [
                 'quantity_pengeringan' => $request->quantity_satuan,
                 'kg_pengeringan' => $request->quantity_kg,

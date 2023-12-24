@@ -71,10 +71,10 @@ class QcController extends Controller {
     public function store(Request $request) {
 
         try {
-            $this->validate($request, [ 'quantity_satuan' => 'required|numeric', 'quantity_kg' => 'required|numeric' ]);
+            $this->validate($request, [ 'quantity_satuan' => 'required|numeric' ]);
             $data = [
                 'quantity_qc' => $request->quantity_satuan,
-                'kg_qc' => $request->quantity_kg,
+                'kg_qc' => $request->quantity_kg ,
                 'status' => 'qc',
                 'is_done' => '1',
                 'qc_id' => Auth::user()->id

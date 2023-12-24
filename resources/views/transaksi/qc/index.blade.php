@@ -105,12 +105,12 @@
                 showAlaret(params);
                 return false;
             }
-            if (quantity_kg == '') {
-                let params = {icon: 'warning', title: 'Masukan quantity berat !'}
-                $('#loading').css("display", "none");
-                showAlaret(params);
-                return false;
-            }
+            // if (quantity_kg == '') {
+            //     let params = {icon: 'warning', title: 'Masukan quantity berat !'}
+            //     $('#loading').css("display", "none");
+            //     showAlaret(params);
+            //     return false;
+            // }
             $.ajax({
                 type: "POST",
                 url: `{{ route('qc.store') }}`,

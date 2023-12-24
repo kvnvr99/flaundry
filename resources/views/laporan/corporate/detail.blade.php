@@ -67,10 +67,10 @@
                                                 </td>
                                                 
                                                 @foreach ($harga_layanan as $count => $row)
-                                                <td class="text-right totalTowel-{{$count}}-item" id="totalTowel-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->jumlah ?? 0) : 0 }}</td>
-                                                <td class="text-right totalReturn-{{$count}}-item" id="totalReturn-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_special_treatment ?? 0) : 0 }}</td>
-                                                <td class="text-right totalRewash-{{$count}}-item" id="totalRewash-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_rewash ?? 0) : 0 }}</td>
-                                                <td class="text-right totalRemark-{{$count}}-item" id="totalRemark-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_remark ?? 0) : 0 }}</td>
+                                                <td class="text-right totalTowel-{{$count}}-item" id="totalTowel-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->jumlah ?? 0) : ($item->kode_layanan == $row->kode ? 0 : '')  }}</td>
+                                                <td class="text-right totalReturn-{{$count}}-item" id="totalReturn-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_special_treatment ?? 0) : ($item->kode_layanan == $row->kode ? 0 : '')  }}</td>
+                                                <td class="text-right totalRewash-{{$count}}-item" id="totalRewash-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_rewash ?? 0) : ($item->kode_layanan == $row->kode ? 0 : '')  }}</td>
+                                                <td class="text-right totalRemark-{{$count}}-item" id="totalRemark-{{$row->kode}}">{{ $item->kode_layanan == $row->kode ? ($item->qty_remark ?? 0) : ($item->kode_layanan == $row->kode ? 0 : '')  }}</td>
                                                 @endforeach
                                             </tr>
                                             @endforeach
@@ -130,7 +130,7 @@
                                 <tfoot>
                                     <tr>
                                         <th colspan="3" class="text-center align-middle">TOTAL AMMOUNT  </th>
-                                        <th class="text-center align-middle" id="totalAmmount">0</th>
+                                        <th class="text-right align-middle" id="totalAmmount">0</th>
                                     </tr>
                                     <tr>
                                         <th colspan="3" class="text-center align-middle">PPN 10%  </th>
@@ -138,7 +138,7 @@
                                     </tr>
                                     <tr>
                                         <th colspan="3" class="text-center align-middle">TOTAL PAY  </th>
-                                        <th class="text-center align-middle">0</th>
+                                        <th class="text-right align-middle">0</th>
                                     </tr>
                                 </tfoot>
                             </table>

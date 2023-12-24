@@ -115,7 +115,7 @@ class SetrikaController extends Controller {
     public function store(Request $request) {
 
         try {
-            $this->validate($request, [ 'quantity_satuan' => 'required|numeric', 'quantity_kg' => 'required|numeric' ]);
+            $this->validate($request, [ 'quantity_satuan' => 'required|numeric' ]);
             $data = [
                 'quantity_setrika' => $request->quantity_satuan,
                 'kg_setrika' => $request->quantity_kg,

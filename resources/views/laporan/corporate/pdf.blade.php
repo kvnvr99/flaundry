@@ -77,13 +77,13 @@
                                                         <td>{{ $index == 0 ? date('H:i:s', strtotime($col->created_at)) : '' }}</td>
                                                         @foreach ($harga_layanan as $count => $row)
                                                             <td class="text-end totalTowel-{{ $count }}-item"
-                                                                id="totalTowel-{{ $row->kode }}">{{ $item->kode_layanan == $row->kode ? ($item->jumlah ?? 0) : 0 }}</td>
+                                                                id="totalTowel-{{ $row->kode }}">{{ $item->kode_layanan == $row->kode ? ($item->jumlah ?? 0) : ($item->kode_layanan == $row->kode ? 0 : '') }}</td>
                                                             <td class="text-end totalReturn-{{ $count }}-item"
-                                                                id="totalReturn-{{ $row->kode }}">{{ $item->kode_layanan == $row->kode ? ($item->qty_special_treatment ?? 0) : 0 }}</td>
+                                                                id="totalReturn-{{ $row->kode }}">{{ $item->kode_layanan == $row->kode ? ($item->qty_special_treatment ?? 0) : ($item->kode_layanan == $row->kode ? 0 : '') }}</td>
                                                             <td class="text-end totalRewash-{{ $count }}-item"
-                                                                id="totalRewash-{{ $row->kode }}">{{ $item->kode_layanan == $row->kode ? ($item->qty_rewash ?? 0) : 0 }}</td>
+                                                                id="totalRewash-{{ $row->kode }}">{{ $item->kode_layanan == $row->kode ? ($item->qty_rewash ?? 0) : ($item->kode_layanan == $row->kode ? 0 : '') }}</td>
                                                             <td class="text-end totalRemark-{{ $count }}-item"
-                                                                id="totalRemark-{{ $row->kode }}">{{ $item->kode_layanan == $row->kode ? ($item->qty_remark ?? 0) : 0 }}</td>
+                                                                id="totalRemark-{{ $row->kode }}">{{ $item->kode_layanan == $row->kode ? ($item->qty_remark ?? 0) : ($item->kode_layanan == $row->kode ? 0 : '') }}</td>
                                                         @endforeach
                                                     </tr>
                                                 @endforeach
