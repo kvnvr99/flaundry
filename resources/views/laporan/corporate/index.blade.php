@@ -35,9 +35,9 @@
             </div>
         </div>
     </div>
-    <div id="modal_redirect_detail" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+    <div id="modal_redirect_detail" class="modal fade bd-example-modal-md" tabindex="-1" role="dialog"
         aria-labelledby="myLargeModalLabelLayanan" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myLargeModalLabelLayanan">Periode</h4>
@@ -48,11 +48,11 @@
                 <div class="modal-body">
                     <div class="row">
                         <input type="hidden" class="index_row">
-                        <div class="col-12">
+                        <div class="col-12 text-center">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6 col-12">
+                                    <div class="row text-center">
+                                        <div class="col-12">
                                             <label for="start-date">Start Date</label>
                                             <input type="text" class="form-control" id="start-date" name="" data-date="">
                                         </div>
