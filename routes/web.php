@@ -163,6 +163,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/get-layanan', [KasirController::class, 'getDataLayanan'])->name('registrasi.get-data-layanan');
         Route::get('/print/{kode_transaksi}', [KasirController::class, 'print'])->name('registrasi.print');
         Route::post('/store', [KasirController::class, 'store'])->name('registrasi.store');
+        Route::get('/history', [KasirController::class, 'history'])->name('registrasi.history');
+        Route::post('/getDataHistory', [KasirController::class, 'getDataHistory'])->name('registrasi.getDataHistory');
     });
 
     Route::prefix('request-laundry')->middleware(['role_or_permission:Maintener|registrasi'])->group(function () {
@@ -172,6 +174,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store', [RequestLaundryController::class, 'store'])->name('request-laundry.store');
         Route::post('/get-data', [RequestLaundryController::class, 'getData'])->name('request-laundry.get-data');
         Route::get('/create/{id}', [RequestLaundryController::class, 'create'])->name('request-laundry.create');
+        Route::get('/history', [RequestLaundryController::class, 'history'])->name('request-laundry.history');
+        Route::post('/getDataHistory', [RequestLaundryController::class, 'getDataHistory'])->name('request-laundry.getDataHistory');
     });
 
     Route::prefix('top-up')->middleware(['role_or_permission:Maintener|topup-member'])->group(function () {
@@ -317,6 +321,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store', [JemputPesananController::class, 'store'])->name('jemput_pesanan.store');
         Route::post('/get-data', [JemputPesananController::class, 'getData'])->name('jemput_pesanan.get-data');
         Route::get('/create/{id}', [JemputPesananController::class, 'create'])->name('jemput_pesanan.create');
+        Route::get('/history', [JemputPesananController::class, 'history'])->name('jemput_pesanan.history');
+        Route::post('/getDataHistory', [JemputPesananController::class, 'getDataHistory'])->name('jemput_pesanan.getDataHistory');
     });
 
     Route::prefix('laporan-member')->middleware(['role_or_permission:Maintener|laporan'])->group(function () {
