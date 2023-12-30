@@ -53,6 +53,7 @@ class HomeController extends Controller
                 $corporate_info = Corporate::where('user_id', auth()->id())->first();
 
                 $transaksi_terakhir = Transaksi::select('*')->where('corporate_id', $corporate_info->id)
+                    // ->where('deliver_at', null)
                     ->orderBy('created_at', 'desc')
                     ->first();
 
