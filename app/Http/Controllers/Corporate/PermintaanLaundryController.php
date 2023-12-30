@@ -36,7 +36,7 @@ class PermintaanLaundryController extends Controller {
 
         $corporate_id = DB::table('corporate')->where('user_id', Auth::user()->id)->first()->id;
 
-        $data = PermintaanLaundry::where('corporate_id','=',$corporate_id);
+        $data = PermintaanLaundry::where('corporate_id','=',$corporate_id)->where('picked_at', null);
         return DataTables::of($data)
 
         ->addColumn('action', function ($data) {

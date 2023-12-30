@@ -26,7 +26,10 @@ class PermintaanLaundry extends Authenticatable
         'alamat',
         'catatan',
         'parfume_id',
-        'layanan_id'
+        'layanan_id',
+        'status_jemput',
+        'picked_by',
+        'picked_at',
     ];
 
     /**
