@@ -46,10 +46,10 @@
         </a>
     @endif
     @if (isset($input_satuan))
-        <input type="text" class="form-control quantity_satuan" style="padding: 0;" name="quantity_qc" autocomplete="off" onkeypress="return isNumber(event)">
+        <input type="text" class="form-control quantity_satuan text-right"  name="quantity_qc" autocomplete="off" onkeypress="return isNumber(event)">
     @endif
     @if (isset($input_kg))
-        <input class="form-control text-left quantity_kg" style="padding: 0;" step=".01" maxlength="9" type="number" name="quantity_kg" autocomplete="off" />
+        <input class="form-control text-left quantity_kg text-right"  step=".01" maxlength="9" type="number" name="quantity_kg" autocomplete="off" />
     @endif
 
 
@@ -78,3 +78,44 @@
     @endif
 
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.quantity_satuan').on('keyup', function(){
+            if (this.value !== '') {
+                let formattedValue = formatNumber(parseNumber(this.value));
+                this.value = formattedValue;
+            }
+        });
+        
+        // $('.quantity_kg').on('input', function () {
+        //     if (this.value !== '') {
+        //         let formattedValue = formatNumber(parseNumber(this.value));
+        //         this.value = formattedValue;
+        //     }
+        // });
+
+
+        function formatRupiah(amount) {
+            // Use Number.prototype.toLocaleString() to format the number as currency
+            return 'Rp ' + Number(amount).toLocaleString('id-ID');
+        }
+    
+        function parseRupiah(rupiahString) {
+            // Remove currency symbol, separators, and parse as integer
+            return parseInt(rupiahString.replace(/[^\d]/g, ''));
+        }
+    
+    
+        function formatNumber(number) {
+            // Use Number.prototype.toLocaleString() to format the number as currency
+            return Number(number).toLocaleString('id-ID');
+        }
+    
+        function parseNumber(number) {
+            // Remove currency symbol, separators, and parse as integer
+            // Replace dot only if it exists in the number
+            return parseInt(number.replace(/[^\d]/g, '').replace('.', ''));
+        }
+    });
+</script>

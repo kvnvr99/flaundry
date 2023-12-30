@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TransaksiImage;
 use App\Models\TransaksiDetail;
+use App\Models\PermintaanLaundry;
 use App\Models\ExpedisiJemputImage;
 use App\Http\Controllers\Controller;
 use App\Repositories\BaseRepository;
@@ -110,7 +111,18 @@ class JemputPesananController extends Controller
                 'status' => 'registrasi',
                 'is_done' => '1'
             ];
+
             DB::beginTransaction();
+            $permintaan_laundry = PermintaanLaundry::where('id', $request->permintaan_laundry_id)->first();
+        
+            if (empty($permintaan_laundry->picked_at)) {
+                $permintaan_laundry->update([
+                    'picked_at' => now(),
+                    'picked_by' => null,
+                    'status_jemput' => 1
+                ]);
+            }
+            
             $transaksi = Transaksi::create($data);
             $detail = [];
             foreach ($request->layanan as $layanan) {
@@ -118,10 +130,10 @@ class JemputPesananController extends Controller
                     "transaksi_id" => $transaksi->id,
                     "harga_id" => $layanan['id'],
                     "kode_layanan" => $layanan['kode_layanan'],
-                    "jumlah" => $layanan['qty_satuan'],
+                    "jumlah" => str_replace('.', '', $layanan['qty_satuan']),
                     "harga_satuan" => $layanan['harga'],
-                    "harga_jumlah" => $layanan['qty_satuan'] * $layanan['harga'],
-                    "qty_special_treatment" => $layanan['qty_special_treatment'],
+                    "harga_jumlah" => str_replace('.', '', $layanan['qty_satuan']) * $layanan['harga'],
+                    "qty_special_treatment" => str_replace('.', '', $layanan['qty_special_treatment']),
                     "harga_special_treatment" => $layanan['harga_special_treatment'],
                     'harga_jumlah_special_treatment' => 0,
                     "total" => $layanan['total']
@@ -192,6 +204,37 @@ class JemputPesananController extends Controller
                 'model' => $data,
                 'url_accept' => route('jemput_pesanan.create', $data->id),
             ]);
+        })
+        ->addIndexColumn()
+        ->rawColumns(['action', 'roles'])
+        ->make(true);
+    }
+
+    public function history(){
+        $parfumes = Parfume::get();
+        return view('transaksi.jemput_pesanan.history', compact('parfumes'));
+    }
+
+    public function getDataHistory() {
+
+        $data = DB::table('permintaan_laundries')
+        ->select('permintaan_laundries.*', 'users.name as nama', 'parfumes.nama as nama_parfume', 'layanans.nama as nama_layanan', 'transaksis.kode_transaksi')
+        ->join('transaksis', 'transaksis.permintaan_laundry_id', '=', 'permintaan_laundries.id', 'left')
+        ->join('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id', 'left')
+        ->join('users', 'users.id', '=', 'corporate.user_id', 'left')
+        ->join('parfumes', 'parfumes.id', '=', 'permintaan_laundries.parfume_id', 'left')
+        ->join('layanans', 'layanans.id', '=', 'permintaan_laundries.layanan_id', 'left')
+        // ->whereNotNull('permintaan_laundries.picked_at') 
+        ->whereRaw('permintaan_laundries.id IN (SELECT ifnull(permintaan_laundry_id,0) FROM transaksis)')
+        ->orderBy('permintaan_laundries.layanan_id', 'ASC')
+        ->get();
+        return DataTables::of($data)
+
+        ->addColumn('action', function ($data) {
+            $btn = '<a href="/jemput-pesanan/print/' . $data->kode_transaksi . '" target="_blank" class="btn btn-sm btn-secondary waves-effect waves-light" title="Print">'.
+                        '<i class="fa fa-print"></i>'.
+                    '</a>';
+            return $btn;
         })
         ->addIndexColumn()
         ->rawColumns(['action', 'roles'])

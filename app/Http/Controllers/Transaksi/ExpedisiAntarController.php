@@ -40,7 +40,7 @@ class ExpedisiAntarController extends Controller {
     public function getData() {
         //belum difilter untuk orang yg menantar
         $data = DB::table('transaksis')
-        ->select('transaksis.*', 'users.name', 'users_deliver.name as deliver_name',DB::raw("(case when transaksis.deliver_at is null then '-' ELSE 'Selesai' END) as status"))
+        ->select('transaksis.*', 'users.name', 'users_deliver.name as deliver_name', DB::raw("(CASE WHEN transaksis.deliver_at IS NULL THEN '-' ELSE 'Selesai' END) AS status"))
         ->join('members', 'members.id', '=', 'transaksis.member_id', 'left')
         ->join('users', 'users.id', '=', 'members.user_id', 'left')
         ->join('users as users_deliver', 'users_deliver.id', '=', 'transaksis.deliver_by', 'left')
@@ -49,9 +49,11 @@ class ExpedisiAntarController extends Controller {
         ->whereNotNull('transaksis.pengeringan_id')
         ->whereNotNull('transaksis.setrika_id')
         ->whereNull('transaksis.deleted_at') 
-        // ->whereNull('transaksis.deliver_at') 
+        ->whereNull('transaksis.deliver_at') 
         ->orderBy('transaksis.id', 'ASC')
         ->get();
+
+
         return DataTables::of($data)
 
         ->addColumn('action', function ($data) {

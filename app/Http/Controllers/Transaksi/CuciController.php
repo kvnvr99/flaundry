@@ -43,7 +43,7 @@ class CuciController extends Controller {
             $items = '';
             $no = 1;
             foreach ($data->TransaksiDetail as $detail) {
-                $items .= $no.' '.$detail->harga->nama.'<br>';
+                $items .= $detail->jumlah.' '.$detail->harga->nama.'<br>';
                 $no++;
             }
             return $items;
@@ -115,9 +115,9 @@ class CuciController extends Controller {
 
     public function store(Request $request) {
         try {
-            $this->validate($request, [ 'quantity_satuan' => 'required|numeric' ]);
+            $this->validate($request, [ 'quantity_satuan' => 'required' ]);
             $data = [
-                'quantity_cuci' => $request->quantity_satuan,
+                'quantity_cuci' => str_replace('.', '', $request->quantity_satuan),
                 'kg_cuci' => $request->quantity_kg,
                 'status' => 'cuci',
                 'is_done' => '1',

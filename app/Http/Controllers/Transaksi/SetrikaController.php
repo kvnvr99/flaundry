@@ -43,7 +43,7 @@ class SetrikaController extends Controller {
             $items = '';
             $no = 1;
             foreach ($data->TransaksiDetail as $detail) {
-                $items .= $no.' '.$detail->harga->nama.'<br>';
+                $items .= $detail->jumlah.' '.$detail->harga->nama.'<br>';
                 $no++;
             }
             return $items;
@@ -115,9 +115,9 @@ class SetrikaController extends Controller {
     public function store(Request $request) {
 
         try {
-            $this->validate($request, [ 'quantity_satuan' => 'required|numeric' ]);
+            $this->validate($request, [ 'quantity_satuan' => 'required' ]);
             $data = [
-                'quantity_setrika' => $request->quantity_satuan,
+                'quantity_setrika' => str_replace('.', '', $request->quantity_satuan),
                 'kg_setrika' => $request->quantity_kg,
                 'status' => 'setrika',
                 'is_done' => '1',

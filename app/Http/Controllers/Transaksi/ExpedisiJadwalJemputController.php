@@ -45,7 +45,7 @@ class ExpedisiJadwalJemputController extends Controller {
             'permintaan_laundries.*', 'users_picked.name as picked_name',
             \DB::raw("CASE WHEN permintaan_laundries.member_id = 0 THEN 'corporate' ELSE 'members' END AS join_type"),
             \DB::raw("COALESCE(corporate_user.name, users.name) AS name")
-        )
+        )->whereRaw('permintaan_laundries.id NOT IN (SELECT ifnull(permintaan_laundry_id,0) FROM transaksis)')
         ->leftJoin('members', 'members.id', '=', 'permintaan_laundries.member_id')
         ->leftJoin('users', 'users.id', '=', 'members.user_id')
         ->leftJoin('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id')

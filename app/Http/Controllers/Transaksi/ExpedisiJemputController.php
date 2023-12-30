@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Transaksi;
 
 use DB;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 
+use Illuminate\Http\Request;
 use App\Models\ExpedisiJemput;
 use App\Models\PermintaanLaundry;
 use Spatie\Permission\Models\Role;
@@ -14,8 +15,8 @@ use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
 use Spatie\Permission\Models\Permission;
-use Yajra\DataTables\Facades\DataTables;
 
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\ExpedisiJemputRequest;
 use App\Http\Requests\ExpedisiJemputRequestUpdate;
 
@@ -35,21 +36,35 @@ class ExpedisiJemputController extends Controller {
 
     public function getData() {
         //belum difilter untuk orang yg menjemput
+        $today = Carbon::now()->toDateString();
+        $yesterday = Carbon::yesterday()->toDateString();
+        $tomorrow = Carbon::tomorrow()->toDateString();
+
         $data = PermintaanLaundry::select(
             'permintaan_laundries.*',
             \DB::raw("(CASE WHEN permintaan_laundries.id IN (SELECT permintaan_laundry_id FROM expedisi_jemputs) THEN 'sudah' ELSE '-' END) AS status"),
             \DB::raw("CASE WHEN permintaan_laundries.member_id = 0 THEN 'corporate' ELSE 'members' END AS join_type"),
             \DB::raw("COALESCE(corporate_user.name, users.name) AS name")
-
         )
-        ->leftJoin('members', 'members.id', '=', 'permintaan_laundries.member_id')
-        ->leftJoin('users', 'users.id', '=', 'members.user_id')
-        ->leftJoin('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id')
-        ->leftJoin('users as corporate_user', 'corporate_user.id', '=', 'corporate.user_id')
-        ->whereNull('permintaan_laundries.deleted_at')
-        ->orderBy('permintaan_laundries.tanggal', 'ASC')
-        ->orderBy('permintaan_laundries.waktu', 'ASC')
-        ->get();
+            ->leftJoin('members', 'members.id', '=', 'permintaan_laundries.member_id')
+            ->leftJoin('users', 'users.id', '=', 'members.user_id')
+            ->leftJoin('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id')
+            ->leftJoin('users as corporate_user', 'corporate_user.id', '=', 'corporate.user_id')
+            ->whereNull('permintaan_laundries.deleted_at')
+            ->whereRaw('permintaan_laundries.id NOT IN (SELECT ifnull(permintaan_laundry_id,0) FROM transaksis)')
+            // ->where(function ($query) use ($today, $yesterday, $tomorrow) {
+            //     $query->where(function ($subquery) use ($today, $yesterday, $tomorrow) {
+            //         $subquery->whereDate('permintaan_laundries.created_at', '=', $today)
+            //             ->orWhereDate('permintaan_laundries.created_at', '=', $yesterday)
+            //             ->orWhereDate('permintaan_laundries.created_at', '=', $tomorrow);
+            //     })
+            //     ->orWhere(function ($subquery) {
+            //         $subquery->where('picked_at', null);
+            //     });
+            // })
+            ->orderBy('permintaan_laundries.tanggal', 'ASC')
+            ->orderBy('permintaan_laundries.waktu', 'ASC')
+            ->get();
         return DataTables::of($data)
 
         ->addColumn('action', function ($data) {

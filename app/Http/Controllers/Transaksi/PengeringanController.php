@@ -43,7 +43,7 @@ class PengeringanController extends Controller {
             $items = '';
             $no = 1;
             foreach ($data->TransaksiDetail as $detail) {
-                $items .= $no.' '.$detail->harga->nama.'<br>';
+                $items .= $detail->jumlah.' '.$detail->harga->nama.'<br>';
                 $no++;
             }
             return $items;
@@ -116,9 +116,9 @@ class PengeringanController extends Controller {
     public function store(Request $request) {
 
         try {
-            $this->validate($request, [ 'quantity_satuan' => 'required|numeric' ]);
+            $this->validate($request, [ 'quantity_satuan' => 'required' ]);
             $data = [
-                'quantity_pengeringan' => $request->quantity_satuan,
+                'quantity_pengeringan' => str_replace('.', '', $request->quantity_satuan),
                 'kg_pengeringan' => $request->quantity_kg,
                 'status' => 'pengeringan',
                 'is_done' => '1',
