@@ -43,19 +43,20 @@ class LaporanCorporateController extends Controller
     {
         $id = $id;
         $data = Transaksi::with('transaksiDetail')
-            ->where('transaksis.corporate_id', $id);
+        ->where('transaksis.corporate_id', $id);
 
-        // Check if startdate and enddate are provided in the request
-        if ($request->filled('startdate') && $request->filled('enddate')) {
+        // Check if startdate is provided in the request
+        if ($request->filled('startdate')) {
             try {
                 $startDate = Carbon::createFromFormat('M-Y', $request->startdate)->startOfMonth();
-                $endDate = Carbon::createFromFormat('M-Y', $request->enddate)->endOfMonth();
             } catch (\Exception $e) {
                 // Handle the case where parsing the date fails
                 return redirect(route('laporan.corporate'));
             }
 
-            $data->whereBetween('transaksis.created_at', [$startDate, $endDate]);
+            // Filter data based on the startdate only
+            $data->whereMonth('transaksis.created_at', $startDate->month)
+                ->whereYear('transaksis.created_at', $startDate->year);
         } else {
             return redirect(route('laporan.corporate'));
         }
@@ -83,19 +84,20 @@ class LaporanCorporateController extends Controller
         $id = $request->id;
 
         $data = Transaksi::with('transaksiDetail')
-            ->where('transaksis.corporate_id', $id);
+        ->where('transaksis.corporate_id', $id);
 
-        // Check if startdate and enddate are provided in the request
-        if ($request->filled('startdate') && $request->filled('enddate')) {
+        // Check if startdate is provided in the request
+        if ($request->filled('startdate')) {
             try {
                 $startDate = Carbon::createFromFormat('M-Y', $request->startdate)->startOfMonth();
-                $endDate = Carbon::createFromFormat('M-Y', $request->enddate)->endOfMonth();
             } catch (\Exception $e) {
                 // Handle the case where parsing the date fails
                 return redirect(route('laporan.corporate'));
             }
 
-            $data->whereBetween('transaksis.created_at', [$startDate, $endDate]);
+            // Filter data based on the startdate only
+            $data->whereMonth('transaksis.created_at', $startDate->month)
+                ->whereYear('transaksis.created_at', $startDate->year);
         } else {
             return redirect(route('laporan.corporate'));
         }
@@ -183,7 +185,7 @@ class LaporanCorporateController extends Controller
         $sheet->mergeCells('A3:G3')->getStyle('A3:G3')->getFont()->setBold(true)->setSize(12);
         $sheet->mergeCells('A4:G4')->getStyle('A4:G4')->getFont()->setBold(true)->setSize(12);
         $sheet->setCellValue('A1', 'Nama : ' . $corporate->user->name . ' - ' . $corporate->address);
-        $sheet->setCellValue('A2', 'Periode : '.($request->startdate || $request->enddate ? (date('M Y', strtotime($request->startdate)) . ' - ' . date('M Y', strtotime($request->enddate))) : '-'))->getStyle('A2')->applyFromArray($textLeft);
+        $sheet->setCellValue('A2', 'Periode : '.($request->startdate ? (date('M Y', strtotime($request->startdate)) ) : '-'))->getStyle('A2')->applyFromArray($textLeft);
         $sheet->setCellValue('A3', 'MONTHLY LAUNDRY')->getStyle('A3')->applyFromArray($textLeft);
         $sheet->setCellValue('A4', 'FRUITS LAUNDRY ')->getStyle('A4')->applyFromArray($textLeft);
         $sheet->mergeCells('A6:A7')->getStyle('A6:A7')->getFont()->setBold(true)->setSize(11);
@@ -382,22 +384,24 @@ class LaporanCorporateController extends Controller
         $id = $request->id;
 
         $data = Transaksi::with('transaksiDetail')
-            ->where('transaksis.corporate_id', $id);
+        ->where('transaksis.corporate_id', $id);
 
-        // Check if startdate and enddate are provided in the request
-        if ($request->filled('startdate') && $request->filled('enddate')) {
+        // Check if startdate is provided in the request
+        if ($request->filled('startdate')) {
             try {
                 $startDate = Carbon::createFromFormat('M-Y', $request->startdate)->startOfMonth();
-                $endDate = Carbon::createFromFormat('M-Y', $request->enddate)->endOfMonth();
             } catch (\Exception $e) {
                 // Handle the case where parsing the date fails
                 return redirect(route('laporan.corporate'));
             }
 
-            $data->whereBetween('transaksis.created_at', [$startDate, $endDate]);
+            // Filter data based on the startdate only
+            $data->whereMonth('transaksis.created_at', $startDate->month)
+                ->whereYear('transaksis.created_at', $startDate->year);
         } else {
             return redirect(route('laporan.corporate'));
         }
+
 
         $data = $data->get();
 

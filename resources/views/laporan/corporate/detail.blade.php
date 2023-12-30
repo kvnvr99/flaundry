@@ -14,7 +14,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <p><strong>{{$corporate->user->name . ' - ' . $corporate->address}}</strong></p>
-                                    <p><strong>PERIODE : {{date('M Y',strtotime(request()->input('startdate')))}} - {{date('M Y',strtotime(request()->input('enddate')))}}</strong></p>
+                                    <p><strong>PERIODE : {{date('M Y',strtotime(request()->input('startdate')))}}</strong></p>
                                     <p><strong>MONTHLY LAUNDRY</strong></p>
                                     <p><strong>FRUITS LAUNDRY</strong></p>
                                 </div>

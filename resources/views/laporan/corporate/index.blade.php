@@ -56,10 +56,6 @@
                                             <label for="start-date">Start Date</label>
                                             <input type="text" class="form-control" id="start-date" name="" data-date="">
                                         </div>
-                                        <div class="col-md-6 col-12">
-                                            <label for="end-date">End Date</label>
-                                            <input type="text" class="form-control" id="end-date" name="" data-date="">
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -127,20 +123,11 @@
                     params.push('startdate=' + $('#start-date').val());
                 }
     
-                if ($('#end-date').val() != '') {
-                    params.push('enddate=' + $('#end-date').val());
-                }
-    
                 window.location.href = url + "?" + params.join('&');
             });
         });
 
         jSuites.calendar(document.getElementById('start-date'), {
-            type: 'year-month-picker',
-            format: 'MMM-YYYY',
-            validRange: ['2020-01-01', '{{today()}}']
-        });
-        jSuites.calendar(document.getElementById('end-date'), {
             type: 'year-month-picker',
             format: 'MMM-YYYY',
             validRange: ['2020-01-01', '{{today()}}']
