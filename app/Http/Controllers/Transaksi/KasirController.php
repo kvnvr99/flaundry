@@ -74,7 +74,7 @@ class KasirController extends Controller
                 'parfume' => $request->parfume,
                 'no_handphone' => $request->no_handphone,
                 'total' => $total,
-                'bayar' => $request->bayar,
+                'bayar' => str_replace(['Rp ','.'], '', $request->bayar),
                 'pembayaran' => $request->pembayaran,
                 'note' => $request->note,
                 'status' => 'registrasi',
@@ -87,12 +87,12 @@ class KasirController extends Controller
                 $transaksi_detail = [
                     "transaksi_id" => $transaksi->id,
                     "harga_id" => $layanan['id'],
-                    "jumlah" => $layanan['qty_satuan'],
+                    "jumlah" => str_replace('.', '', $layanan['qty_satuan']),
                     "harga_satuan" => $layanan['harga'],
-                    "harga_jumlah" => $layanan['qty_satuan'] * $layanan['harga'],
-                    "qty_special_treatment" => $layanan['qty_special_treatment'],
+                    "harga_jumlah" => str_replace('.', '', $layanan['qty_satuan']) * $layanan['harga'],
+                    "qty_special_treatment" => $layanan['qty_special_treatment'] ? str_replace('.', '', $layanan['qty_special_treatment']) : 0,
                     "harga_special_treatment" => $layanan['harga_special_treatment'],
-                    'harga_jumlah_special_treatment' => $layanan['qty_special_treatment'] * $layanan['harga_special_treatment'],
+                    'harga_jumlah_special_treatment' => $layanan['qty_special_treatment'] ? str_replace('.', '', $layanan['qty_special_treatment']) : 0 * $layanan['harga_special_treatment'],
                     "total" => $layanan['total']
                 ];
                 $detail [] = $this->detail->store($transaksi_detail);
@@ -139,5 +139,27 @@ class KasirController extends Controller
             Alert::toast($th->getMessage(), 'error');
             return back();
         }
+    }
+
+    public function history(){
+        return view('transaksi.registrasi.history');
+    }
+
+    public function getDataHistory(){
+        $data = Transaksi::select(DB::raw('transaksis.nama, transaksis.kode_transaksi'))
+                        ->whereNull('permintaan_laundry_id')
+                        ->get();
+
+        return DataTables::of($data)
+
+        ->addColumn('action', function ($data) {
+            $btn = '<a href="/registrasi/print/' . $data->kode_transaksi . '" target="_blank" class="btn btn-sm btn-secondary waves-effect waves-light" title="Print">'.
+                        '<i class="fa fa-print"></i>'.
+                    '</a>';
+            return $btn;
+        })
+        ->addIndexColumn()
+        ->rawColumns(['action'])
+        ->make(true);
     }
 }
