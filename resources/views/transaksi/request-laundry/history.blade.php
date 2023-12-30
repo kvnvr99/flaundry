@@ -11,11 +11,6 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="row p-1">
-                                <div class="col-12 text-right">
-                                    <a href="{{route('request-laundry.history')}}" class="btn btn-primary">History</a>
-                                </div>
-                            </div>
                             <table id="state-saving-datatable" class="table activate-select dt-responsive nowrap w-100">
                                 <thead>
                                     <tr>
@@ -48,7 +43,7 @@
             method: "POST",
             scrollX: true,
             ajax: {
-                url: "{!! route('request-laundry.get-data') !!}",
+                url: "{!! route('request-laundry.getDataHistory') !!}",
                 type: "POST",
                 dataType: "JSON"
             },

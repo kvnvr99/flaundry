@@ -105,7 +105,7 @@ class RequestLaundryController extends Controller
                 'parfume' => $request->parfume,
                 'no_handphone' => $request->no_handphone,
                 'total' => $total,
-                'bayar' => $request->bayar,
+                'bayar' => str_replace(['Rp ','.'], '', $request->bayar),
                 'pembayaran' => $request->pembayaran,
                 'note' => $request->note,
                 'status' => 'registrasi',
@@ -118,12 +118,12 @@ class RequestLaundryController extends Controller
                 $transaksi_detail = [
                     "transaksi_id" => $transaksi->id,
                     "harga_id" => $layanan['id'],
-                    "jumlah" => $layanan['qty_satuan'],
+                    "jumlah" => str_replace('.', '', $layanan['qty_satuan']),
                     "harga_satuan" => $layanan['harga'],
-                    "harga_jumlah" => $layanan['qty_satuan'] * $layanan['harga'],
-                    "qty_special_treatment" => $layanan['qty_special_treatment'],
+                    "harga_jumlah" => str_replace('.', '', $layanan['qty_satuan']) * $layanan['harga'],
+                    "qty_special_treatment" => $layanan['qty_special_treatment'] ? str_replace('.', '', $layanan['qty_special_treatment']) : 0,
                     "harga_special_treatment" => $layanan['harga_special_treatment'],
-                    'harga_jumlah_special_treatment' => $layanan['qty_special_treatment'] * $layanan['harga_special_treatment'],
+                    'harga_jumlah_special_treatment' => $layanan['qty_special_treatment'] ? str_replace('.', '', $layanan['qty_special_treatment']) : 0 * $layanan['harga_special_treatment'],
                     "total" => $layanan['total']
                 ];
                 $detail [] = $this->detail->store($transaksi_detail);
@@ -198,5 +198,38 @@ class RequestLaundryController extends Controller
         ->rawColumns(['action', 'roles'])
         ->make(true);
     }
+    
+    public function history() {
+        $outlets = Outlet::get();
+        $parfumes = Parfume::get();
+        return view('transaksi.request-laundry.history', compact('outlets', 'parfumes'));
+    }
 
+    public function getDataHistory() {
+
+        $data = DB::table('permintaan_laundries')
+        ->select('permintaan_laundries.*', 'users.name as nama', 'parfumes.nama as nama_parfume', 'layanans.nama as nama_layanan', 'transaksis.kode_transaksi')
+        ->join('transaksis', 'transaksis.permintaan_laundry_id', '=', 'permintaan_laundries.id', 'left')
+        ->join('members', 'members.id', '=', 'permintaan_laundries.member_id', 'left')
+        ->join('users', 'users.id', '=', 'members.user_id', 'left')
+        ->join('parfumes', 'parfumes.id', '=', 'permintaan_laundries.parfume_id', 'left')
+        ->join('layanans', 'layanans.id', '=', 'permintaan_laundries.layanan_id', 'left')
+        ->whereNotNull('permintaan_laundries.picked_at')
+        ->whereNull('permintaan_laundries.deleted_at') 
+        ->where('permintaan_laundries.corporate_id','=', 0)
+        ->whereRaw('permintaan_laundries.id IN (SELECT ifnull(permintaan_laundry_id,0) FROM transaksis)')
+        ->orderBy('permintaan_laundries.layanan_id', 'ASC')
+        ->get();
+        return DataTables::of($data)
+
+        ->addColumn('action', function ($data) {
+            $btn = '<a href="/request-laundry/print/' . $data->kode_transaksi . '" target="_blank" class="btn btn-sm btn-secondary waves-effect waves-light" title="Print">'.
+                        '<i class="fa fa-print"></i>'.
+                    '</a>';
+            return $btn;
+        })
+        ->addIndexColumn()
+        ->rawColumns(['action'])
+        ->make(true);
+    }
 }
