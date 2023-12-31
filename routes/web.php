@@ -42,6 +42,7 @@ use App\Http\Controllers\Transaksi\ExpedisiJemputController;
 use App\Http\Controllers\Transaksi\RequestLaundryController;
 use App\Http\Controllers\Infogram\InfogramExpedisiController;
 use App\Http\Controllers\Laporan\LaporanFrenchaiseController;
+use App\Http\Controllers\Transaksi\JemputNonPesananController;
 use App\Http\Controllers\Transaksi\ExpedisiJadwalAntarController;
 use App\Http\Controllers\Transaksi\ExpedisiJadwalJemputController;
 
@@ -313,7 +314,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/get-data-parfume', [PermintaanLaundryController::class, 'getDataParfume'])->name('permintaan-laundry.get-data-parfume');
     });
 
-
     Route::prefix('jemput-pesanan')->middleware(['role_or_permission:Maintener|registrasi'])->group(function () {
         Route::get('/', [JemputPesananController::class, 'index'])->name('jemput_pesanan');
         Route::post('/get-layanan', [JemputPesananController::class, 'getDataLayanan'])->name('jemput_pesanan.get-data-layanan');
@@ -323,6 +323,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create/{id}', [JemputPesananController::class, 'create'])->name('jemput_pesanan.create');
         Route::get('/history', [JemputPesananController::class, 'history'])->name('jemput_pesanan.history');
         Route::post('/getDataHistory', [JemputPesananController::class, 'getDataHistory'])->name('jemput_pesanan.getDataHistory');
+    });
+    
+    Route::prefix('jemput-non-pesanan')->middleware(['role_or_permission:Maintener|registrasi'])->group(function () {
+        Route::get('/', [JemputNonPesananController::class, 'index'])->name('jemput_non_pesanan');
+        Route::post('/getDataCorporate', [JemputNonPesananController::class, 'getDataCorporate'])->name('jemput_non_pesanan.getDataCorporate');
+        Route::post('/get-layanan', [JemputNonPesananController::class, 'getDataLayanan'])->name('jemput_non_pesanan.get-data-layanan');
+        Route::get('/print/{kode_transaksi}', [JemputNonPesananController::class, 'print'])->name('jemput_non_pesanan.print');
+        Route::post('/store', [JemputNonPesananController::class, 'store'])->name('jemput_non_pesanan.store');
+        Route::get('/history', [JemputNonPesananController::class, 'history'])->name('jemput_non_pesanan.history');
+        Route::post('/getDataHistory', [JemputNonPesananController::class, 'getDataHistory'])->name('jemput_non_pesanan.getDataHistory');
     });
 
     Route::prefix('laporan-member')->middleware(['role_or_permission:Maintener|laporan'])->group(function () {

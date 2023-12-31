@@ -75,11 +75,7 @@ class JemputPesananController extends Controller
         $data = Harga::select('id','kode','nama','harga','jenis_item');
         return DataTables::of($data)
         ->addColumn('harga', function ($data) {
-            if (isset($data->harga_member)){
-                return $data->harga_member;
-            } else {
-                return $data->harga;
-            }
+            return $data->harga;
         })
         ->addIndexColumn()
         ->rawColumns(['harga'])

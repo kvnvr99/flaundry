@@ -174,7 +174,7 @@
                     </a>
                 </li>
                 @endif
-                @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jemput_pesanan', 'jadwal-jemput', 'jemput-barang', 'jadwal-antar', 'antar-barang']))
+                @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jemput_pesanan', 'jemput_non_pesanan', 'jadwal-jemput', 'jemput-barang', 'jadwal-antar', 'antar-barang']))
                 <li>
                     <a href="#expedisi" data-toggle="collapse">
                         <i class="fe-truck"></i>
@@ -201,6 +201,13 @@
                             <li>
                                 <a href="{{ route('jemput_pesanan') }}">
                                     <span>Jemput Pesanan</span>
+                                </a>
+                            </li>
+                            @endif
+                            @if( Auth::user()->getRoleNames()[0] == 'Developer' || Auth::user()->hasAnyPermission(['jemput_non_pesanan']))
+                            <li>
+                                <a href="{{ route('jemput_non_pesanan') }}">
+                                    <span>Jemput Non Pesanan</span>
                                 </a>
                             </li>
                             @endif

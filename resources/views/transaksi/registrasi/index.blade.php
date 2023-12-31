@@ -21,8 +21,8 @@
         .remove {
             display: block;
             /* background: #444;
-            border: 1px solid black;
-            color: white; */
+                border: 1px solid black;
+                color: white; */
             text-align: center;
             cursor: pointer;
             /* border-radius: 5px; */
@@ -907,103 +907,78 @@
                 console.log(sum);
             });
 
+            function updateRowValues(row) {
+                let harga = row.find('.layanan_harga').val() || 0;
+                let qtySatuan = parseNumber(row.find('.layanan_qty_satuan').val()) || 0;
+                let qtySpecialTreatment = parseNumber(row.find('.layanan_qty_special_treatment').val()) || 0;
+                let hargaSpecialTreatment = parseNumber(row.find('.layanan_harga_special_treatment').val()) || 0;
+
+                let totalSatuan = parseInt(harga) * qtySatuan;
+                let totalSpecialTreatment = parseInt(qtySpecialTreatment) * parseInt(hargaSpecialTreatment) || 0;
+
+                let subTotal = totalSatuan + totalSpecialTreatment;
+                let subTotalLabel = numberFormater(subTotal);
+
+                row.find('.layanan_total_label').html('Rp. ' + subTotalLabel);
+                row.find('.layanan_total').val(subTotal);
+            }
+
             $(document).on('keyup', '.layanan_qty_satuan', function(e) {
-                let formattedValue = formatNumber(parseNumber(this
-                    .value)); // Format and then parse the value
-                this.value = formattedValue; // Update the input value
+                let formattedValue = formatNumber(parseNumber(this.value));
+                this.value = formattedValue;
 
                 if (/^0/.test(this.value)) {
                     this.value = this.value.replace(/^0/, "");
                 }
 
-                let this_row = $(this).parent().parent();
-                let harga = this_row.find('.layanan_harga').val() || 0;
-                let layanan_qty_special_treatment = this_row.find('.layanan_qty_special_treatment').val() ||
-                    0;
-                let layanan_harga_special_treatment = this_row.find('.layanan_harga_special_treatment')
-                    .val() || 0;
-                let total_special_treatment = parseInt(layanan_qty_special_treatment) * parseInt(
-                    layanan_harga_special_treatment) || 0;
+                let thisRow = $(this).closest('tr');
+                updateRowValues(thisRow);
 
-                let quantity = parseNumber(formattedValue); // Use the parsed value for calculations
+                let sumQtySatuan = 0;
+                $('#table-data-layanan').find(".layanan_qty_satuan").each(function() {
+                    if ($(this).val() !== '') {
+                        sumQtySatuan += +parseNumber($(this).val());
+                    }
+                });
+                $(".sub_layanan_qty_satuan").html(formatNumber(sumQtySatuan));
 
-                if (layanan_harga_special_treatment >= 0 && quantity >= 0 &&
-                    layanan_qty_special_treatment >= 0) {
-                    let total_harga = parseInt(harga) * quantity;
-                    let sub_total_harga_this_row = total_harga + parseInt(total_special_treatment) || 0;
-
-                    let sub_total_harga_this_row_label = numberFormater(parseInt(sub_total_harga_this_row));
-                    this_row.find('.layanan_total_label').html('Rp. ' + sub_total_harga_this_row_label);
-                    this_row.find('.layanan_total').val(sub_total_harga_this_row);
-
-                    let sum = 0;
-                    $('#table-data-layanan').find(".layanan_qty_satuan").each(function() {
-                        if ($(this).val() !== '') {
-                            sum += +parseNumber($(this).val());
-                        }
-                    });
-                    $(".sub_layanan_qty_satuan").html(formatNumber(sum));
-
-                    let sum_total = 0;
-                    $('#table-data-layanan').find(".layanan_total").each(function() {
-                        if ($(this).val() !== '') {
-                            sum_total += +parseNumber($(this).val());
-                        }
-                    });
-                    sum_total = numberFormater(sum_total);
-                    $(".sub_all_qty_harga").html(sum_total);
-                }
+                let sumTotal = 0;
+                $('#table-data-layanan').find(".layanan_total").each(function() {
+                    if ($(this).val() !== '') {
+                        sumTotal += +parseNumber($(this).val());
+                    }
+                });
+                $(".sub_all_qty_harga").html(numberFormater(sumTotal));
             });
 
             $(document).on('keyup', '.layanan_qty_special_treatment', function(e) {
-                let formattedValue = formatNumber(parseNumber(this
-                    .value)); // Format and then parse the value
-                this.value = formattedValue; // Update the input value
-
+                let formattedValue = formatNumber(parseNumber(this.value));
+                this.value = formattedValue;
 
                 if (/^0/.test(this.value)) {
-                    this.value = this.value.replace(/^0/, "")
+                    this.value = this.value.replace(/^0/, "");
                 }
-                let this_row = $(this).parent().parent();
-                let harga = this_row.find('.layanan_harga').val() || 0;
-                let quantity = parseNumber(formattedValue);
 
-                let layanan_qty_special_treatment = this_row.find('.layanan_qty_special_treatment').val() ||
-                    0;
-                let layanan_harga_special_treatment = this_row.find('.layanan_harga_special_treatment')
-                .val() || 0;
-                let total_special_treatment = parseInt(layanan_qty_special_treatment) * parseInt(
-                    layanan_harga_special_treatment) || 0;
+                let thisRow = $(this).closest('tr');
+                updateRowValues(thisRow);
 
-                if (layanan_harga_special_treatment >= 0 && quantity >= 0 &&
-                    layanan_qty_special_treatment >= 0) {
-                    let total_harga = parseInt(harga) * parseInt(quantity);
-                    let sub_total_harga_this_row = parseInt(total_harga) + parseInt(
-                        total_special_treatment) || 0;
+                let sumQtySpecialTreatment = 0;
+                $('#table-data-layanan').find(".layanan_qty_special_treatment").each(function() {
+                    if ($(this).val() !== '') {
+                        sumQtySpecialTreatment += +parseNumber($(this).val());
+                    }
+                });
+                $(".sub_special_teatment_qty_satuan").html(formatNumber(sumQtySpecialTreatment));
 
-                    let sub_total_harga_this_row_label = numberFormater(parseInt(sub_total_harga_this_row));
-                    this_row.find('.layanan_total_label').html('Rp. ' + sub_total_harga_this_row_label);
-                    this_row.find('.layanan_total').val(sub_total_harga_this_row);
-
-                    let sum = 0;
-                    $('#table-data-layanan').find(".layanan_qty_special_treatment").each(
-                function() {
-                        if ($(this).val() !== '') {
-                            sum += +parseNumber($(this).val());
-                        }
-                    });
-                    $(".sub_special_teatment_qty_satuan").html(formatNumber(sum));
-
-                    let sum_total = 0;
-                    $('#table-data-layanan').find(".layanan_total").each(function() {
-                        if ($(this).val() !== '') {
-                            sum_total += +parseNumber($(this).val());
-                        }
-                    });
-                    sum_total = numberFormater(sum_total);
-                    $(".sub_all_qty_harga").html(sum_total);
-                }
+                let sumTotal = 0;
+                $('#table-data-layanan').find(".layanan_total").each(function() {
+                    if ($(this).val() !== '') {
+                        sumTotal += +parseNumber($(this).val());
+                    }
+                });
+                $(".sub_all_qty_harga").html(numberFormater(sumTotal));
             });
+
 
             // $(document).on('keyup', '.layanan_harga_special_treatment', function (e) {
             //     if (/^0/.test(this.value)) {

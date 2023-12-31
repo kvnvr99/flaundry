@@ -21,8 +21,8 @@
         .remove {
             display: block;
             /* background: #444;
-            border: 1px solid black;
-            color: white; */
+                border: 1px solid black;
+                color: white; */
             text-align: center;
             cursor: pointer;
             /* border-radius: 5px; */
@@ -61,241 +61,227 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-body">
-                                <form method="POST" id="form-transaksi" enctype="multipart/form-data"
-                                    action="{{ route('registrasi.store') }}">
-                                    @csrf
-                                    <div class="row">
-                                        <label class="col-md-3 col-form-label">Gambar Cucian</label>
-                                        @foreach ($images as $val)
-                                            <span class="pip"><img class="thumbnail"
-                                                    src="{{ asset('storage/') . '/' . $val->image }}"></span>
-                                        @endforeach
+                                <div class="row mb-3 p-1">
+                                    <div class="col-6">
+                                        <h4 class="header-title">Jemput Non Pesanan</h4>
                                     </div>
-                                    <br><br><br>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-3 col-form-label">Outlet</label>
-                                                <div class="col-md-9">
-                                                    <div class="selectize-control multi">
-                                                        <div style="height: auto;"
-                                                            class="selectize-input items not-full has-options has-items">
-                                                            @foreach ($outlets as $outlet)
-                                                                <div class="select-input item-outlet"
-                                                                    data-value="{{ $outlet->id }}">{{ $outlet->nama }}
-                                                                </div>
-                                                            @endforeach
-                                                            <input type="text" autocomplete="off" tabindex=""
-                                                                id="selectize-outlet-selectized"
-                                                                style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
-                                                        </div>
-                                                        <div class="selectize-dropdown multi" style="display: none;">
-                                                            <div class="selectize-dropdown-content"></div>
-                                                        </div>
-                                                    </div>
-                                                    <input type="text" name="outlet" id="selectize-outlet"
-                                                        tabindex="-1" class="selectized" style="display: none;">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-3 col-form-label">Kategori Layanan</label>
-                                                <div class="col-md-9">
-                                                    <div class="selectize-control multi">
-                                                        <div class="selectize-input items not-full has-options has-items">
-                                                            <div class="select-input item" data-value="reguler">REG</div>
-                                                            <div class="select-input item" data-value="express">EXPRESS
+                                    <div class="col-6 text-right">
+                                        <a href="{{ route('jemput_non_pesanan.history') }}"
+                                            class="btn btn-primary">History</a>
+                                    </div>
+                                </div>
+                                <div id="basicwizard">
+                                    <ul class="nav nav-pills bg-light nav-justified form-wizard-header mb-4">
+                                        <li class="nav-item">
+                                            <a href="#barang_masuk" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2"
+                                                style="border: 1px solid #c9c1c1;">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                                <span class="d-none d-sm-inline">Barang Masuk</span>
+                                            </a>
+                                        </li>
+                                        {{-- <li class="nav-item">
+                                        <a href="#barang_keluar" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2" style="border: 1px solid #c9c1c1;">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                            <span class="d-none d-sm-inline">Barang Keluar</span>
+                                        </a>
+                                    </li> --}}
+                                    </ul>
+                                    <div class="tab-content b-0 mb-0 pt-0">
+                                        <div class="tab-pane" id="barang_masuk">
+                                            <form method="POST" id="form-transaksi" enctype="multipart/form-data"
+                                                action="{{ route('jemput_non_pesanan.store') }}">
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group row mb-3 pilih_member">
+                                                            <label class="col-md-3 col-form-label"
+                                                                for="triggerCorporate">Pilih
+                                                                Corporate</label>
+                                                            <div class="col-md-4">
+                                                                <button type="button" id="triggerCorporate"
+                                                                    class="btn btn-secondary" data-toggle="modal"
+                                                                    data-target="#modal-corporate"><i
+                                                                        class="fas fa-search"></i></button>
                                                             </div>
-                                                            <div class="select-input item" data-value="super_express">SUPER
-                                                                EXPRESS</div>
-                                                            <input type="text" autocomplete="off" tabindex=""
-                                                                id="selectize-tags-selectized"
-                                                                style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
                                                         </div>
-                                                        <div class="selectize-dropdown multi" style="display: none;">
-                                                            <div class="selectize-dropdown-content"></div>
+                                                        <div class="form-group row mb-3">
+                                                            <label class="col-md-3 col-form-label"
+                                                                for="nama">Nama</label>
+                                                            <div class="col-md-9">
+                                                                <input readonly type="text"
+                                                                    class="form-control data-pelanggan first-outlet"
+                                                                    id="nama" name="nama" readonly>
+                                                                <input type="hidden" class="form-control" id="corporate_id"
+                                                                    name="corporate_id">
+                                                                <input type="hidden" class="form-control"
+                                                                    id="permintaan_laundry_id" name="permintaan_laundry_id">
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <input type="text" name="kategori" id="selectize-tags" tabindex="-1"
-                                                        class="selectized" style="display: none;" value=>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row mb-3" style="display:none;">
-                                                <label class="col-md-3 col-form-label">Kategori Pelanggan</label>
-                                                <div class="col-md-9">
-                                                    <input type="text" id="selectize-pelanggan" name="pelanggan"
-                                                        tabindex="-1" class="selectized" style="display: none;"
-                                                        value="member">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-3 col-form-label" for="nama">Nama</label>
-                                                <div class="col-md-9">
-                                                    <input readonly type="text"
-                                                        class="form-control data-pelanggan first-outlet" id="nama"
-                                                        name="nama" value="{{ $info->nama }}" readonly>
-                                                    <input type="hidden" class="form-control" id="member_id"
-                                                        name="member_id" value="{{ $info->member_id }}">
-                                                    <input type="hidden" class="form-control" id="permintaan_laundry_id"
-                                                        name="permintaan_laundry_id" value="{{ $info->id }}">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-3 col-form-label" for="alamat">Alamat</label>
-                                                <div class="col-md-9">
-                                                    <input readonly type="text"
-                                                        class="form-control data-pelanggan first-outlet" id="alamat"
-                                                        name="alamat" value="{{ $info->alamat }}">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-3 col-form-label" for="no_handphone">No
-                                                    Handphone</label>
-                                                <div class="col-md-9">
-                                                    <input readonly type="text"
-                                                        class="form-control data-pelanggan first-outlet" id="no_handphone"
-                                                        name="no_handphone" value="{{ $info->phone }}">
-                                                </div>
-                                            </div>
-                                            {{-- <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label" for="parfume">Parfume</label>
-                                            <div class="col-md-9">
-                                                <input readonly type="text" class="form-control first-outlet" id="parfume" name="parfume">
-                                            </div>
-                                        </div> --}}
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-3 col-form-label">Parfume</label>
-                                                <div class="col-md-9">
-                                                    <div class="selectize-control multi">
-                                                        <div style="height: auto;"
-                                                            class="selectize-input items not-full has-options has-items">
-                                                            @foreach ($parfumes as $parfume)
-                                                                <div class="select-input item-parfume"
-                                                                    data-value="{{ $parfume->id }}">{{ $parfume->nama }}
+                                                        <div class="form-group row mb-3">
+                                                            <label class="col-md-3 col-form-label"
+                                                                for="alamat">Alamat</label>
+                                                            <div class="col-md-9">
+                                                                <input readonly type="text"
+                                                                    class="form-control data-pelanggan first-outlet"
+                                                                    id="alamat" name="alamat">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row mb-3">
+                                                            <label class="col-md-3 col-form-label" for="no_handphone">No
+                                                                Handphone</label>
+                                                            <div class="col-md-9">
+                                                                <input readonly type="text"
+                                                                    class="form-control data-pelanggan first-outlet"
+                                                                    id="no_handphone" name="no_handphone">
+                                                            </div>
+                                                        </div>
+                                                        {{-- <div class="form-group row mb-3">
+                                                        <label class="col-md-3 col-form-label" for="parfume">Parfume</label>
+                                                        <div class="col-md-9">
+                                                            <input readonly type="text" class="form-control first-outlet" id="parfume" name="parfume">
+                                                        </div>
+                                                    </div> --}}
+                                                        <div class="form-group row mb-3">
+                                                            <label class="col-md-3 col-form-label">Parfume</label>
+                                                            <div class="col-md-9">
+                                                                <div class="selectize-control multi">
+                                                                    <div style="height: auto;"
+                                                                        class="selectize-input items not-full has-options has-items">
+                                                                        @foreach ($parfumes as $parfume)
+                                                                            <div class="select-input item-parfume"
+                                                                                data-value="{{ $parfume->id }}">
+                                                                                {{ $parfume->nama }}</div>
+                                                                        @endforeach
+                                                                        <input type="text" autocomplete="off"
+                                                                            tabindex="" id="selectize-parfume-selectized"
+                                                                            style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
+                                                                    </div>
+                                                                    <div class="selectize-dropdown multi"
+                                                                        style="display: none;">
+                                                                        <div class="selectize-dropdown-content"></div>
+                                                                    </div>
                                                                 </div>
-                                                            @endforeach
-                                                            <input type="text" autocomplete="off" tabindex=""
-                                                                id="selectize-parfume-selectized"
-                                                                style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
+                                                                <input type="text" name="parfume" id="selectize-parfume"
+                                                                    tabindex="-1" class="selectized"
+                                                                    style="display: none;">
+                                                            </div>
                                                         </div>
-                                                        <div class="selectize-dropdown multi" style="display: none;">
-                                                            <div class="selectize-dropdown-content"></div>
+                                                        <div class="form-group mb-3">
+                                                            <label for="example-textarea">Catatan</label>
+                                                            <textarea class="form-control" name="note" id="example-textarea" rows="5"></textarea>
                                                         </div>
-                                                    </div>
-                                                    <input type="text" name="parfume" id="selectize-parfume"
-                                                        tabindex="-1" class="selectized" style="display: none;">
-                                                </div>
-                                            </div>
-                                            <div class="form-group mb-3">
-                                                <label for="example-textarea">Catatan</label>
-                                                <textarea class="form-control" name="note" id="example-textarea" rows="5"></textarea>
-                                            </div>
-                                            <div class="form-group row mb-3">
-                                                <label class="col-3 col-form-label">Gambar Cucian</label>
-                                                <div class="col-9">
-                                                    <div class="input-group">
-                                                        <div class="custom-file">
-                                                            <input accept="image/png, image/gif, image/jpeg, image/jpg"
-                                                                multiple name="images[]" type="file"
-                                                                class="custom-file-input" id="images">
-                                                            <label class="custom-file-label" for="images">Upload
-                                                                Beberapa Gambar(Max 10)</label>
+                                                        <div class="form-group row mb-3">
+                                                            <label class="col-3 col-form-label">Gambar Cucian</label>
+                                                            <div class="col-9">
+                                                                <div class="input-group">
+                                                                    <div class="custom-file">
+                                                                        <input
+                                                                            accept="image/png, image/gif, image/jpeg, image/jpg"
+                                                                            multiple name="images[]" type="file"
+                                                                            class="custom-file-input" id="images">
+                                                                        <label class="custom-file-label"
+                                                                            for="images">Upload Beberapa Gambar(Max
+                                                                            10)</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div id="image-preview"></div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div id="image-preview"></div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="table-responsive-md">
-                                                <table
-                                                    class="table activate-select dt-responsive nowrap w-100 table-bordered"
-                                                    id="table-data-layanan">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="text-center" width="15%">Nama Layanan</th>
-                                                            <th class="text-center" width="15%">Harga Satuan</th>
-                                                            <th class="text-center">Quantity</th>
-                                                            <th class="text-center">Quantity Special Treatment</th>
-                                                            <th class="text-center" width="15%">Total</th>
-                                                            <th class="text-center action-buton" width="4%">Aksi</th>
-                                                        </tr>
-                                                    </thead>
-                                                </table>
-                                                <table class="table activate-select dt-responsive nowrap w-100"
-                                                    id="table-data-layanan-subtotal">
-                                                    <tbody>
-                                                        <tr>
-                                                            <th class="text-center" width="15%">Sub Total</th>
-                                                            <th class="text-right" width="15%">Rp. <span
-                                                                    class="sub_layanan_harga_satuan">0</span></th>
-                                                            <th class="text-right"><span
-                                                                    class="sub_layanan_qty_satuan">0</span></th>
-                                                            <th class="text-right"></th>
-                                                            <th class="text-right"><span
-                                                                    class="sub_special_teatment_qty_satuan">0</span></th>
-                                                            <th class="text-right" width="15%">Rp. <span
-                                                                    class="sub_all_qty_harga">0</span></th>
-                                                            <th class="text-right action-buton" width="4%"></th>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style="float: right;" class="row">
-                                        <div class="col-md-6">
-                                            <button type="button" class="btn btn-dark btn-square triggerLayanan">Tambah
-                                                Layanan</button>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-3 col-form-label">Pembayaran</label>
-                                                <div class="col-md-9">
-                                                    <div class="selectize-control multi">
-                                                        <div class="selectize-input items not-full has-options has-items">
-                                                            <div class="select-input item-pembayaran" data-value="tunai">
-                                                                TUNAI</div>
-                                                            <div class="select-input item-pembayaran"
-                                                                data-value="non_tunai">NON TUNAI</div>
-                                                            <div class="select-input item-pembayaran"
-                                                                data-value="pot_deposit">POT DEPOSIT</div>
-                                                            <input type="text" autocomplete="off" tabindex=""
-                                                                id="selectize-pembayaran-selectized"
-                                                                style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
-                                                        </div>
-                                                        <div class="selectize-dropdown multi" style="display: none;">
-                                                            <div class="selectize-dropdown-content"></div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="table-responsive-md">
+                                                            <table
+                                                                class="table activate-select dt-responsive nowrap w-100 table-bordered"
+                                                                id="table-data-layanan">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="text-center" width="15%">Nama
+                                                                            Layanan</th>
+                                                                        <th class="text-center" width="15%">Harga
+                                                                            Satuan</th>
+                                                                        <th class="text-center">Quantity</th>
+                                                                        <th class="text-center">Quantity Return
+                                                                        </th>
+                                                                        <th class="text-center" width="15%">Total</th>
+                                                                        <th class="text-center action-buton"
+                                                                            width="4%">Aksi</th>
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                            <table class="table activate-select dt-responsive nowrap w-100"
+                                                                id="table-data-layanan-subtotal">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th class="text-right" width="15%">Sub Total
+                                                                        </th>
+                                                                        <th class="text-right" width="15%">Rp. <span
+                                                                                class="sub_layanan_harga_satuan">0</span>
+                                                                        </th>
+                                                                        <th class="text-right"><span
+                                                                                class="sub_layanan_qty_satuan">0</span>
+                                                                        </th>
+                                                                        <th class="text-right"></th>
+                                                                        <th class="text-right"><span
+                                                                                class="sub_special_teatment_qty_satuan">0</span>
+                                                                        </th>
+                                                                        <th class="text-right" width="15%">Rp. <span
+                                                                                class="sub_all_qty_harga">0</span></th>
+                                                                        <th class="text-right action-buton"
+                                                                            width="4%"></th>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
-                                                    <input type="text" name="pembayaran" id="selectize-pembayaran"
-                                                        tabindex="-1" class="selectized" style="display: none;">
                                                 </div>
-                                            </div>
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-3 col-form-label" for="bayar">Bayar</label>
-                                                <div class="col-md-9">
-                                                    <input readonly type="text" class="form-control first-outlet"
-                                                        id="bayar" name="bayar" autocomplete="off"
-                                                        onkeypress="return isNumber(event)">
+                                                <div style="float: right;" class="row">
+                                                    <div class="col-md-6">
+                                                        <button type="button"
+                                                            class="btn btn-dark btn-square triggerLayanan">Tambah
+                                                            Layanan</button>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <br>
+                                                <br>
+                                                <div style="float: right;" class="row mt-5">
+                                                    <ul class="list-inline wizard mb-0">
+                                                        <li class="next list-inline-item float-right">
+                                                            <button type="submit" class="btn btn-secondary">Cetak
+                                                                Struk</button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        {{-- <div class="tab-pane" id="barang_keluar">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group row mb-3">
+                                                    <label class="col-md-3 col-form-label" for="name"> First name</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" id="name" name="name" class="form-control" value="Francis">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row mb-3">
+                                                    <label class="col-md-3 col-form-label" for="surname"> Last name</label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" id="surname" name="surname" class="form-control" value="Brinkman">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row mb-3">
+                                                    <label class="col-md-3 col-form-label" for="email">Email</label>
+                                                    <div class="col-md-9">
+                                                        <input type="email" id="email" name="email" class="form-control" value="cory1979@hotmail.com">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div> --}}
                                     </div>
-                                    <div style="float: right;" class="row mt-5">
-                                        <ul class="list-inline wizard mb-0">
-                                            <li class="next list-inline-item float-right">
-                                                <button type="submit" class="btn btn-secondary">Cetak Struk</button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -320,6 +306,8 @@
                 </span>
                 <input data-toggle="modal" readonly class="form-control text-right show-layanan layanan_harga"
                     type="hidden" name="layanan[0][harga]" autocomplete="off" />
+                <input data-toggle="modal" readonly class="form-control text-right show-layanan kode_layanan"
+                    type="hidden" name="layanan[0][kode_layanan]" autocomplete="off" />
             </td>
             <td class="text-right no-padding">
                 <input class="form-control text-right no-padding layanan_qty_satuan" required readonly
@@ -346,7 +334,7 @@
             </td>
         </tr>
     </table>
-    <div id="modal-member" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+    <div id="modal-corporate" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
         aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -446,65 +434,12 @@
 
             $('.item').click(function(e) {
                 e.preventDefault();
-                let outletID = $('#selectize-outlet').val();
-                console.log(outletID);
-                if (outletID == '') {
-                    let params = {
-                        icon: 'warning',
-                        title: 'Silahkan Pilih Outlet !',
-                        text: 'Pastikan nama outlet sudah sesuai !'
-                    }
-                    showAlaret(params);
-                    return false;
-                }
                 let value = $(this).data('value');
                 $('.item').not(this).each(function() {
                     $(this).css("background-color", "#edeff1");
                 });
                 $(this).css("background-color", "#6c757d");
                 $('#selectize-tags').val(value);
-            });
-
-            $('.item-pelanggan').click(function(e) {
-                e.preventDefault();
-                let outletID = $('#selectize-outlet').val();
-                if (outletID == '') {
-                    let params = {
-                        icon: 'warning',
-                        title: 'Silahkan Pilih Outlet !',
-                        text: 'Pastikan nama outlet sudah sesuai !'
-                    }
-                    showAlaret(params);
-                    return false;
-                }
-                let value = $(this).data('value');
-                $('.item-pelanggan').not(this).each(function() {
-                    $(this).css("background-color", "#edeff1");
-                });
-                $(this).css("background-color", "#6c757d");
-                $('#selectize-pelanggan').val(value);
-                if (value == 'member') {
-                    $('.pilih_member').css("display", "flex");
-                    $(".data-pelanggan").prop('readonly', true);
-                    $(".data-pelanggan").css('background-color', '#cfcece');
-                    $(".data-pelanggan").css('cursor', 'no-drop');
-                } else {
-                    $('.pilih_member').css("display", "none");
-                    $(".data-pelanggan").prop('readonly', false);
-                    $(".data-pelanggan").css('background-color', '#fff');
-                    $(".data-pelanggan").css('cursor', 'auto');
-                }
-            });
-
-            $('.item-outlet').click(function(e) {
-                e.preventDefault();
-                let value = $(this).data('value');
-                $('.item-outlet').not(this).each(function() {
-                    $(this).css("background-color", "#edeff1");
-                });
-                $(this).css("background-color", "#6c757d");
-                $('#selectize-outlet').val(value);
-                $(".first-outlet").prop('readonly', false);
             });
 
             $('.item-parfume').click(function(e) {
@@ -520,16 +455,6 @@
 
             $('.item-pembayaran').click(function(e) {
                 e.preventDefault();
-                let outletID = $('#selectize-outlet').val();
-                if (outletID == '') {
-                    let params = {
-                        icon: 'warning',
-                        title: 'Silahkan Pilih Outlet !',
-                        text: 'Pastikan nama outlet sudah sesuai !'
-                    }
-                    showAlaret(params);
-                    return false;
-                }
                 let value = $(this).data('value');
                 $('.item-pembayaran').not(this).each(function() {
                     $(this).css("background-color", "#edeff1");
@@ -549,28 +474,18 @@
                 }
             });
 
-            $('#show-member').click(function(e) {
+            $('#triggerCorporate').click(function(e) {
                 e.preventDefault();
-                let outletID = $('#selectize-outlet').val();
-                if (outletID == '') {
-                    let params = {
-                        icon: 'warning',
-                        title: 'Silahkan Pilih Outlet !',
-                        text: 'Pastikan nama outlet sudah sesuai !'
-                    }
-                    showAlaret(params);
-                    return false;
-                }
                 $('#state-saving-datatable').DataTable({
                     responsive: true,
                     processing: true,
                     serverSide: true,
-                    method: "POST",
+                    method: "Get",
                     scrollX: true,
                     bDestroy: true,
                     ajax: {
-                        url: "{!! route('user-member.get-data') !!}",
-                        type: "POST",
+                        url: "{!! route('user_corporate.getData') !!}",
+                        type: "Get",
                         dataType: "JSON"
                     },
                     columns: [{
@@ -610,16 +525,6 @@
             var member_table = $('#state-saving-datatable').DataTable();
 
             $('#state-saving-datatable tbody').on('click', 'tr', function() {
-                let outletID = $('#selectize-outlet').val();
-                if (outletID == '') {
-                    let params = {
-                        icon: 'warning',
-                        title: 'Silahkan Pilih Outlet !',
-                        text: 'Pastikan nama outlet sudah sesuai !'
-                    }
-                    showAlaret(params);
-                    return false;
-                }
                 var row = $(this);
                 row.find('.input[type="radio"]').attr('checked', 'checked');
                 let id = row.find('input[type="radio"]').data('id');
@@ -629,22 +534,12 @@
                 $('#nama').val(name)
                 $('#no_handphone').val(phone)
                 $('#alamat').val(address)
-                $('#member_id').val(id)
-                $('#modal-member').modal('hide');
+                $('#corporate_id').val(id)
+                $('#modal-corporate').modal('hide');
             });
 
             if (window.File && window.FileList && window.FileReader) {
                 $("#images").on("change", function(e) {
-                    let outletID = $('#selectize-outlet').val();
-                    if (outletID == '') {
-                        let params = {
-                            icon: 'warning',
-                            title: 'Silahkan Pilih Outlet !',
-                            text: 'Pastikan nama outlet sudah sesuai !'
-                        }
-                        showAlaret(params);
-                        return false;
-                    }
                     const files = e.target.files,
                         filesLength = files.length;
                     if (filesLength > 10) {
@@ -690,11 +585,6 @@
                 e.preventDefault();
                 let kategori_layanan = $('#selectize-tags').val();
                 let pelanggan = $('#selectize-pelanggan').val();
-                if (kategori_layanan == '') {
-                    $('#modal-layanan').modal('hide');
-                    Swal.fire("Warning!", "Silahkan Pilih Kategori Layanan.", "warning");
-                    return false;
-                }
                 let index_row = $(this).parent().parent().attr('childidx');
                 let table = $('#state-saving-datatable-layanan').DataTable();
                 table.destroy();
@@ -708,7 +598,7 @@
                     scrollX: true,
                     // bDestroy: true,
                     ajax: {
-                        url: "{!! route('request-laundry.get-data-layanan') !!}",
+                        url: "{!! route('jemput_non_pesanan.get-data-layanan') !!}",
                         type: "POST",
                         dataType: "JSON",
                         data: ({
@@ -770,10 +660,11 @@
                 this_row.find(".form-control").css('background-color', '#FFF');
                 this_row.find('.layanan_nama_label').html(nama);
                 let harga_label = numberFormater(parseInt(harga));
-                this_row.find('.layanan_harga_label').html('Rp. ' + harga_label + '/' + jenis_item);
+                this_row.find('.layanan_harga_label').html('Rp. ' + harga_label);
                 this_row.find('.layanan_id').val(id);
                 this_row.find('.layanan_nama').val(nama);
                 this_row.find('.layanan_harga').val(harga);
+                this_row.find('.kode_layanan').val(kode);
 
                 let sum = 0;
                 $(document).find(".layanan_harga").each(function() {
@@ -804,77 +695,125 @@
                 console.log(sum);
             });
 
-            function updateRowValues(row) {
-                let harga = row.find('.layanan_harga').val() || 0;
-                let qtySatuan = parseNumber(row.find('.layanan_qty_satuan').val()) || 0;
-                let qtySpecialTreatment = parseNumber(row.find('.layanan_qty_special_treatment').val()) || 0;
-                let hargaSpecialTreatment = parseNumber(row.find('.layanan_harga_special_treatment').val()) || 0;
+            // $(document).on('keyup', '.layanan_qty_satuan, .layanan_qty_special_treatment', function(e) {
+            //     let formattedValue = formatNumber(parseNumber(this.value));
+            //     this.value = formattedValue;
 
-                let totalSatuan = parseInt(harga) * qtySatuan;
-                let totalSpecialTreatment = parseInt(qtySpecialTreatment) * parseInt(hargaSpecialTreatment) || 0;
+            //     if (/^0/.test(this.value)) {
+            //         this.value = this.value.replace(/^0/, "");
+            //     }
 
-                let subTotal = totalSatuan + totalSpecialTreatment;
-                let subTotalLabel = numberFormater(subTotal);
+            //     let this_row = $(this).closest('tr');
+            //     let harga = this_row.find('.layanan_harga').val() || 0;
+            //     let quantity_satuan = parseNumber(this_row.find('.layanan_qty_satuan').val()) || 0;
+            //     let quantity_special_treatment = parseNumber(this_row.find('.layanan_qty_special_treatment')
+            //         .val()) || 0;
 
-                row.find('.layanan_total_label').html('Rp. ' + subTotalLabel);
-                row.find('.layanan_total').val(subTotal);
-            }
+            //     let harga_satuan = parseInt(harga) * quantity_satuan;
+            //     let total_special_treatment = parseInt(quantity_special_treatment) * parseInt(this_row.find(
+            //         '.layanan_harga_special_treatment').val()) || 0;
+
+            //     let sub_total_harga_this_row = harga_satuan + total_special_treatment;
+            //     let sub_total_harga_this_row_label = numberFormater(sub_total_harga_this_row);
+
+            //     this_row.find('.layanan_total_label').html('Rp. ' + sub_total_harga_this_row_label);
+            //     this_row.find('.layanan_total').val(sub_total_harga_this_row);
+
+            //     let sum_qty_satuan = 0;
+            //     let sum_qty_special_treatment = 0;
+            //     let sum_total = 0;
+
+            //     $('#table-data-layanan').find(".layanan_qty_satuan").each(function() {
+            //         if ($(this).val() !== '') {
+            //             sum_qty_satuan += +parseNumber($(this).val());
+            //         }
+            //     });
+
+            //     $('#table-data-layanan').find(".layanan_qty_special_treatment").each(function() {
+            //         if ($(this).val() !== '') {
+            //             sum_qty_special_treatment += +parseNumber($(this).val());
+            //         }
+            //     });
+
+            //     $(".sub_layanan_qty_satuan").html(formatNumber(sum_qty_satuan));
+            //     $(".sub_special_teatment_qty_satuan").html(formatNumber(sum_qty_special_treatment));
+
+            //     $('#table-data-layanan').find(".layanan_total").each(function() {
+            //         if ($(this).val() !== '') {
+            //             sum_total += +parseNumber($(this).val());
+            //         }
+            //     });
+
+            //     sum_total = numberFormater(sum_total);
+            //     $(".sub_all_qty_harga").html(sum_total);
+            // });
 
             $(document).on('keyup', '.layanan_qty_satuan', function(e) {
-                let formattedValue = formatNumber(parseNumber(this.value));
-                this.value = formattedValue;
+                let formattedValue = formatNumber(parseNumber(this
+                .value)); // Format and then parse the value
+                this.value = formattedValue; // Update the input value
 
                 if (/^0/.test(this.value)) {
                     this.value = this.value.replace(/^0/, "");
                 }
 
-                let thisRow = $(this).closest('tr');
-                updateRowValues(thisRow);
+                let this_row = $(this).parent().parent();
+                let harga = this_row.find('.layanan_harga').val() || 0;
+                let layanan_qty_special_treatment = this_row.find('.layanan_qty_special_treatment').val() ||
+                    0;
+                let layanan_harga_special_treatment = this_row.find('.layanan_harga_special_treatment')
+                .val() || 0;
+                let total_special_treatment = parseInt(layanan_qty_special_treatment) * parseInt(
+                    layanan_harga_special_treatment) || 0;
 
-                let sumQtySatuan = 0;
-                $('#table-data-layanan').find(".layanan_qty_satuan").each(function() {
-                    if ($(this).val() !== '') {
-                        sumQtySatuan += +parseNumber($(this).val());
-                    }
-                });
-                $(".sub_layanan_qty_satuan").html(formatNumber(sumQtySatuan));
+                let quantity = parseNumber(formattedValue); // Use the parsed value for calculations
 
-                let sumTotal = 0;
-                $('#table-data-layanan').find(".layanan_total").each(function() {
-                    if ($(this).val() !== '') {
-                        sumTotal += +parseNumber($(this).val());
-                    }
-                });
-                $(".sub_all_qty_harga").html(numberFormater(sumTotal));
+                if (layanan_harga_special_treatment >= 0 && quantity >= 0 &&
+                    layanan_qty_special_treatment >= 0) {
+                    let total_harga = parseInt(harga) * quantity;
+                    let sub_total_harga_this_row = total_harga + parseInt(total_special_treatment) || 0;
+
+                    let sub_total_harga_this_row_label = numberFormater(parseInt(sub_total_harga_this_row));
+                    this_row.find('.layanan_total_label').html('Rp. ' + sub_total_harga_this_row_label);
+                    this_row.find('.layanan_total').val(sub_total_harga_this_row);
+
+                    let sum = 0;
+                    $('#table-data-layanan').find(".layanan_qty_satuan").each(function() {
+                        if ($(this).val() !== '') {
+                            sum += +parseNumber($(this).val());
+                        }
+                    });
+                    $(".sub_layanan_qty_satuan").html(formatNumber(sum));
+
+                    let sum_total = 0;
+                    $('#table-data-layanan').find(".layanan_total").each(function() {
+                        if ($(this).val() !== '') {
+                            sum_total += +parseNumber($(this).val());
+                        }
+                    });
+                    sum_total = numberFormater(sum_total);
+                    $(".sub_all_qty_harga").html(sum_total);
+                }
             });
+
 
             $(document).on('keyup', '.layanan_qty_special_treatment', function(e) {
-                let formattedValue = formatNumber(parseNumber(this.value));
-                this.value = formattedValue;
-
+                let formattedValue = formatNumber(parseNumber(this
+                .value)); // Format and then parse the value
+                this.value = formattedValue; // Update the input value
                 if (/^0/.test(this.value)) {
-                    this.value = this.value.replace(/^0/, "");
+                    this.value = this.value.replace(/^0/, "")
                 }
 
-                let thisRow = $(this).closest('tr');
-                updateRowValues(thisRow);
-
-                let sumQtySpecialTreatment = 0;
+                let sum = 0;
                 $('#table-data-layanan').find(".layanan_qty_special_treatment").each(function() {
                     if ($(this).val() !== '') {
-                        sumQtySpecialTreatment += +parseNumber($(this).val());
+                        sum += +parseNumber($(this).val());
                     }
                 });
-                $(".sub_special_teatment_qty_satuan").html(formatNumber(sumQtySpecialTreatment));
-
-                let sumTotal = 0;
-                $('#table-data-layanan').find(".layanan_total").each(function() {
-                    if ($(this).val() !== '') {
-                        sumTotal += +parseNumber($(this).val());
-                    }
-                });
-                $(".sub_all_qty_harga").html(numberFormater(sumTotal));
+                $(".sub_special_teatment_qty_satuan").html(formatNumber(sum));
             });
+
 
             // $(document).on('keyup', '.layanan_harga_special_treatment', function (e) {
             //     if (/^0/.test(this.value)) {
@@ -1016,23 +955,21 @@
                     $('#loading').css("display", "block");
                     $.ajax({
                         type: "POST",
-                        url: `{{ route('request-laundry.store') }}`,
+                        url: `{{ route('jemput_non_pesanan.store') }}`,
                         data: formData,
                         processData: false,
                         contentType: false,
                         dataType: "JSON",
                         success: function(response) {
                             if (response.status == true) {
-                                let print_home = `{{ url('request-laundry') }}`;
-                                let print_url = `{{ url('request-laundry/print') }}`;
+                                let print_url = `{{ url('jemput-non-pesanan/print') }}`;
                                 let redirect_print_url = print_url + '/' + response
                                     .kode_transaksi;
                                 // window.open(print_url,'nama window','width=459,height=1000,toolbar=no,location=no,directories=no,status=no,menubar=no, scrollbars=no,resizable=no,copyhistory=no');
                                 window.open(redirect_print_url, '_blank');
-                                window.location.href = print_home;
-                                // window.open(print_home);
-                                // window.close();
-                                // setTimeout(function () { window.location.reload(true); }, 500);
+                                setTimeout(function() {
+                                    window.location.reload(true);
+                                }, 500);
                             } else {
                                 if (response.err == 'empty_layanan') {
                                     let params = {
@@ -1090,7 +1027,6 @@
                 const parsedValue = parseInt(number.replace(/[^\d]/g, ''));
                 return isNaN(parsedValue) ? 0 : parsedValue;
             }
-
         });
     </script>
 @endpush

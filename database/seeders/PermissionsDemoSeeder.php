@@ -55,6 +55,7 @@ class PermissionsDemoSeeder extends Seeder
 
             'data-corporate',
             'jemput_pesanan',
+            'jemput_non_pesanan',
 
             'home-corporate',
             'list-transaksi-corporate',
@@ -84,7 +85,6 @@ class PermissionsDemoSeeder extends Seeder
             'data-member',
             'topup-member',
             'data-corporate',
-            'jemput_pesanan',
             'quality-control',
             'cuci',
             'pengeringan',
@@ -93,7 +93,9 @@ class PermissionsDemoSeeder extends Seeder
             'jadwal-antar',
             'jemput-barang',
             'antar-barang',
-            'master-data'
+            'master-data',
+            'jemput_pesanan',
+            'jemput_non_pesanan'
         ]); // AKSES PERMISSON ADMIN
         $member = Role::create(['name' => 'Member']);
         $member->givePermissionTo([

@@ -20,7 +20,7 @@ use App\Repositories\BaseRepository;
 use DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class KasirController extends Controller
+class JemputNonPesananController extends Controller
 {
 
     protected $model, $detail, $images;
@@ -33,24 +33,16 @@ class KasirController extends Controller
     }
 
     public function index() {
-        $outlets = Outlet::get();
         $parfumes = Parfume::get();
-        return view('transaksi.registrasi.index', compact('outlets', 'parfumes'));
+        return view('transaksi.jemput_non_pesanan.index', compact('parfumes'));
     }
 
     public function getDataLayanan(Request $request) {
-        if ($request->member == 'member') {
-            $data = Harga::select('id','kode','nama','harga_member', 'jenis_item')->where('kategori', $request->kategori);
-        } else {
-            $data = Harga::select('id','kode','nama','harga','jenis_item')->where('kategori', $request->kategori);
-        }
+        // $data = Harga::select('id','kode','nama','harga','jenis_item')->where('kategori', $request->kategori);
+        $data = Harga::select('id','kode','nama','harga','jenis_item');
         return DataTables::of($data)
         ->addColumn('harga', function ($data) {
-            if (isset($data->harga_member)){
-                return $data->harga_member;
-            } else {
-                return $data->harga;
-            }
+            return $data->harga;
         })
         ->addIndexColumn()
         ->rawColumns(['harga'])
@@ -67,35 +59,39 @@ class KasirController extends Controller
             $data = [
                 'kode_transaksi' => $kode_transaksi.strtoupper(Str::random(5)),
                 'kasir_id' => Auth::user()->id,
-                'outlet_id' => $request->outlet,
-                'member_id' => $request->member_id,
+                'permintaan_laundry_id' => null,
+                'member_id' => 0,
+                'outlet_id' => 0,
+                'corporate_id' => $request->corporate_id,
                 'nama' => $request->nama,
                 'alamat' => $request->alamat,
                 'parfume' => $request->parfume,
                 'no_handphone' => $request->no_handphone,
                 'total' => $total,
-                'bayar' => str_replace(['Rp ','.'], '', $request->bayar),
+                'bayar' => $request->bayar,
                 'pembayaran' => $request->pembayaran,
                 'note' => $request->note,
                 'status' => 'registrasi',
                 'is_done' => '1'
             ];
+
             DB::beginTransaction();
-            $transaksi = $this->model->store($data);
+            $transaksi = Transaksi::create($data);
             $detail = [];
             foreach ($request->layanan as $layanan) {
                 $transaksi_detail = [
                     "transaksi_id" => $transaksi->id,
                     "harga_id" => $layanan['id'],
+                    "kode_layanan" => $layanan['kode_layanan'],
                     "jumlah" => str_replace('.', '', $layanan['qty_satuan']),
                     "harga_satuan" => $layanan['harga'],
                     "harga_jumlah" => str_replace('.', '', $layanan['qty_satuan']) * $layanan['harga'],
-                    "qty_special_treatment" => $layanan['qty_special_treatment'] ? str_replace('.', '', $layanan['qty_special_treatment']) : 0,
+                    "qty_special_treatment" => str_replace('.', '', $layanan['qty_special_treatment']),
                     "harga_special_treatment" => $layanan['harga_special_treatment'],
-                    'harga_jumlah_special_treatment' => $layanan['qty_special_treatment'] ? str_replace('.', '', $layanan['qty_special_treatment']) : 0 * $layanan['harga_special_treatment'],
+                    'harga_jumlah_special_treatment' => 0,
                     "total" => $layanan['total']
                 ];
-                $detail [] = $this->detail->store($transaksi_detail);
+                $detail [] = TransaksiDetail::create($transaksi_detail);
             }
             if($request->hasfile('images')) {
                 $images = [];
@@ -103,16 +99,16 @@ class KasirController extends Controller
                     $image = [];
                     $image['transaksi_id'] = $transaksi->id;
                     $image['image'] = $file->store('transaksi/registrasi', 'public');
-                    $images [] = $this->images->store($image);
+                    $images [] = TransaksiImage::create($image);
                 }
             }
-            $outlet_name = Outlet::where('id', $data['outlet_id'])->firstOrFail();
+            // $corporate = Corporate::where('id', $data['corporate_id'])->firstOrFail();
             LogActivity::create([
                 'user_id'   => Auth::user()->id,
                 'modul'     => 'Registrasi',
                 'model'     => 'Transaksi',
                 'action'    => 'Add',
-                'note'      => Auth::user()->name . ' Telah menambahkan registrasi dengan no ' . $data['kode_transaksi'] . ' di outlet ' . $outlet_name->nama,
+                'note'      => Auth::user()->name . ' Telah menambahkan registrasi dengan no ' . $data['kode_transaksi'],
                 'old_data'  => null,
                 'new_data'  => json_encode($data),
             ]);
@@ -134,7 +130,7 @@ class KasirController extends Controller
     public function print($kode_transaksi) {
         try {
             $data = Transaksi::with('TransaksiDetail', 'outlet')->where('kode_transaksi', $kode_transaksi)->first();
-            return view('transaksi.registrasi.faktur', compact('data'));
+            return view('transaksi.jemput_non_pesanan.faktur', compact('data'));
         } catch (\Throwable $th) {
             Alert::toast($th->getMessage(), 'error');
             return back();
@@ -142,19 +138,21 @@ class KasirController extends Controller
     }
 
     public function history(){
-        return view('transaksi.registrasi.history');
+        return view('transaksi.jemput_non_pesanan.history');
     }
 
     public function getDataHistory(){
         $data = Transaksi::select(DB::raw('transaksis.nama, transaksis.kode_transaksi'))
-                        ->where('corporate_id', 0)
+                        ->where('member_id', 0)
+                        ->where('outlet_id', 0)
                         ->whereNull('permintaan_laundry_id')
+                        ->whereNotNull('corporate_id')
                         ->get();
 
         return DataTables::of($data)
 
         ->addColumn('action', function ($data) {
-            $btn = '<a href="/registrasi/print/' . $data->kode_transaksi . '" target="_blank" class="btn btn-sm btn-secondary waves-effect waves-light" title="Print">'.
+            $btn = '<a href="/jemput-non-pesanan/print/' . $data->kode_transaksi . '" target="_blank" class="btn btn-sm btn-secondary waves-effect waves-light" title="Print">'.
                         '<i class="fa fa-print"></i>'.
                     '</a>';
             return $btn;

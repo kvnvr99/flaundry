@@ -74,14 +74,6 @@
                                     <br><br><br>
                                     <div class="row">
                                         <div class="col-12">
-                                            <div class="form-group row mb-3" style="display:none;">
-                                                <label class="col-md-3 col-form-label">Kategori Pelanggan</label>
-                                                <div class="col-md-9">
-                                                    <input type="text" id="selectize-pelanggan" name="pelanggan"
-                                                        tabindex="-1" class="selectized" style="display: none;"
-                                                        value="member">
-                                                </div>
-                                            </div>
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-3 col-form-label" for="nama">Nama</label>
                                                 <div class="col-md-9">
