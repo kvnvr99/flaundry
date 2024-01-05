@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Artisan;
 
 //Master Data
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Transaksi\QcController;
 use App\Http\Controllers\Transaksi\CuciController;
 use App\Http\Controllers\MasterData\RoleController;
@@ -11,9 +12,9 @@ use App\Http\Controllers\MasterData\UserController;
 use App\Http\Controllers\Transaksi\KasirController;
 use App\Http\Controllers\Transaksi\TopupController;
 use App\Http\Controllers\MasterData\HargaController;
-use App\Http\Controllers\MasterData\MemberController;
 
 //Transaksi
+use App\Http\Controllers\MasterData\MemberController;
 use App\Http\Controllers\MasterData\OutletController;
 use App\Http\Controllers\Transaksi\SetrikaController;
 use App\Http\Controllers\MasterData\LayananController;
@@ -25,26 +26,34 @@ use App\Http\Controllers\Laporan\LaporanMemberController;
 use App\Http\Controllers\Laporan\LaporanOutletController;
 use App\Http\Controllers\MasterData\MasterDataController;
 use App\Http\Controllers\Member\HistoryLaundryController;
-use App\Http\Controllers\Transaksi\PengeringanController;
 
 //Member
+use App\Http\Controllers\Transaksi\PengeringanController;
 use App\Http\Controllers\Infogram\InfogramOutletController;
-use App\Http\Controllers\Laporan\LaporanExpedisiController;
 
 //Laporan
+use App\Http\Controllers\Laporan\LaporanExpedisiController;
 use App\Http\Controllers\Transaksi\ExpedisiAntarController;
 use App\Http\Controllers\Transaksi\JemputPesananController;
 use App\Http\Controllers\Transaksi\RekapComplainController;
 use App\Http\Controllers\Laporan\LaporanCorporateController;
 use App\Http\Controllers\Member\PermintaanLaundryController;
-use App\Http\Controllers\Transaksi\ExpedisiJemputController;
 
+use App\Http\Controllers\Transaksi\ExpedisiJemputController;
 use App\Http\Controllers\Transaksi\RequestLaundryController;
 use App\Http\Controllers\Infogram\InfogramExpedisiController;
 use App\Http\Controllers\Laporan\LaporanFrenchaiseController;
 use App\Http\Controllers\Transaksi\JemputNonPesananController;
 use App\Http\Controllers\Transaksi\ExpedisiJadwalAntarController;
 use App\Http\Controllers\Transaksi\ExpedisiJadwalJemputController;
+
+Route::get('/seeder/permission', function () {
+    Artisan::call('db:seed', [
+        '--class' => 'PermissionsDemoSeeder',
+    ]);
+
+    return redirect('/home');
+});
 
 Route::get('/', function() {
     return redirect('/login');
@@ -247,6 +256,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [QcController::class, 'index'])->name('qc');
         Route::post('/get-data', [QcController::class, 'getData'])->name('qc.get-data');
         Route::post('/store', [QcController::class, 'store'])->name('qc.store');
+        Route::get('/history', [QcController::class, 'history'])->name('qc.history');
+        Route::post('/history/getDataHistory', [QcController::class, 'getDataHistory'])->name('qc.history.getDataHistory');
+        Route::post('/history/restore', [QcController::class, 'restore'])->name('qc.history.restore');
     });
 
     Route::prefix('cuci')->middleware(['role_or_permission:Maintener|cuci'])->group(function () {

@@ -105,4 +105,87 @@ class QcController extends Controller {
         }
 
     }
+    
+    public function history() {
+        return view('transaksi.qc.history');
+    }
+
+    public function getDataHistory() {
+        $data = Transaksi::with('TransaksiDetail', 'outlet')->where('status', 'qc')->where('is_done', '1')->get();
+        return DataTables::of($data)
+        ->addColumn('action', function ($data) {
+            return view('component.action', [
+                'model' => $data,
+                'restore' => $data->id
+            ]);
+        })
+        ->addColumn('items', function ($data) {
+            $roles = $data->permissions()->get();
+            $items = '';
+            $no = 1;
+            foreach ($data->TransaksiDetail as $detail) {
+                $items .= $detail->jumlah.' '.$detail->harga->nama.'<br>';
+                $no++;
+            }
+            return $items;
+        })
+        ->addColumn('quantity_satuan', function ($data) {
+            return view('component.action', [
+                'model' => $data,
+                'input_satuan' => $data->id,
+                'data_satuan' => $data->quantity_qc,
+                'readonly' => true
+            ]);
+
+        })
+        ->addColumn('quantity_kg', function ($data) {
+            return view('component.action', [
+                'model' => $data,
+                'input_kg' => $data->id,
+                'data_kg' => $data->kg_qc,
+                'readonly' => true
+            ]);
+        })
+        ->addIndexColumn()
+        ->rawColumns(['action', 'items', 'quantity_satuan, quantity_kg'])
+        ->make(true);
+    }
+
+    public function restore(Request $request) {
+
+        try {
+            $this->validate($request, [ 'quantity_satuan' => 'required' ]);
+            $data = [
+                'quantity_qc' => null,
+                'kg_qc' => null,
+                'status' => 'registrasi',
+                'is_done' => '1',
+                'qc_id' => null
+            ];
+            DB::beginTransaction();
+            $updated = $this->model->update($request->id, $data);
+            LogActivity::create([
+                'user_id'   => Auth::user()->id,
+                'modul'     => 'QC',
+                'model'     => 'Transaksi',
+                'action'    => 'Restore',
+                'note'      => Auth::user()->name . ' Telah mengembalikan ulang transaksi ' . $updated['kode_transaksi'],
+                'old_data'  => null,
+                'new_data'  => json_encode($data),
+            ]);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'data' => $data
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'err' => 'system_error',
+                'msg' => $th->getMessage()
+            ], 200);
+        }
+
+    }
 }

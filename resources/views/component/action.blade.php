@@ -45,11 +45,16 @@
             <i class="far fa-times-circle"></i>
         </a>
     @endif
+    @if (isset($restore))
+        <a href="#" data-id="{{ $restore }}" class="btn btn-sm btn-primary waves-effect waves-light restore" title="Restore">
+            <i class="fa fa-undo" aria-hidden="true"></i>
+        </a>
+    @endif
     @if (isset($input_satuan))
-        <input type="text" class="form-control quantity_satuan text-right"  name="quantity_qc" autocomplete="off" onkeypress="return isNumber(event)">
+        <input type="text" class="form-control quantity_satuan text-right"  name="quantity_qc" value="@if(isset($data_satuan)) {{$data_satuan}} @endif" autocomplete="off" onkeypress="return isNumber(event)" @if(isset($readonly)) {{$readonly === true ? 'readonly' : ''}} @endif>
     @endif
     @if (isset($input_kg))
-        <input class="form-control text-left quantity_kg text-right"  step=".01" maxlength="9" type="number" name="quantity_kg" autocomplete="off" />
+        <input class="form-control text-left quantity_kg text-right"  step=".01" maxlength="9" value="@if(isset($data_kg)) {{$data_kg}} @endif" type="number" name="quantity_kg" autocomplete="off"  @if(isset($readonly)) {{$readonly === true ? 'readonly' : ''}} @endif/>
     @endif
 
 

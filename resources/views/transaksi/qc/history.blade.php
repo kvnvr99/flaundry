@@ -11,14 +11,6 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="row mb-3 p-1">
-                                <div class="col-6">
-                                    <h4 class="header-title"> Quality Control</h4>
-                                </div>
-                                <div class="col-6 text-right">
-                                    <a href="{{ route('qc.history') }}" class="btn btn-primary">History</a>
-                                </div>
-                            </div>
                             <table id="state-saving-datatable" class="table activate-select dt-responsive nowrap w-100">
                                 <thead>
                                     <tr>
@@ -72,7 +64,7 @@
             method: "POST",
             scrollX: true,
             ajax: {
-                url: "{!! route('qc.get-data') !!}",
+                url: "{!! route('qc.history.getDataHistory') !!}",
                 type: "POST",
                 dataType: "JSON"
             },
@@ -122,6 +114,48 @@
             $.ajax({
                 type: "POST",
                 url: `{{ route('qc.store') }}`,
+                data: ({
+                    id: id,
+                    quantity_satuan: quantity_satuan,
+                    quantity_kg: quantity_kg
+                }),
+                dataType: "JSON",
+                success: function (response) {
+                    let params = {icon: 'success', title: 'Berhasil di update !'}
+                    $('#loading').css("display", "none");
+                    showAlaret(params);
+                    $('#state-saving-datatable').DataTable().ajax.reload();
+                },
+                error: function (request, status, error) {
+                    let params = {icon: 'error', title: 'Terjadi kesalahan atau koneksi terputus !'}
+                    $('#loading').css("display", "none");
+                    showAlaret(params);
+                }
+            });
+        });
+
+        $(document).on('click', '.restore', function (e) {
+            e.preventDefault();
+            $('#loading').css("display", "block")
+            let id = $(this).data('id');
+            let this_row = $(this).parent().parent().parent();
+            let quantity_satuan = this_row.find('.get-action .quantity_satuan').val();
+            let quantity_kg = this_row.find('.get-action .quantity_kg').val();
+            if (quantity_satuan == '') {
+                let params = {icon: 'warning', title: 'Masukan quantity satuan !'}
+                $('#loading').css("display", "none");
+                showAlaret(params);
+                return false;
+            }
+            // if (quantity_kg == '') {
+            //     let params = {icon: 'warning', title: 'Masukan quantity berat !'}
+            //     $('#loading').css("display", "none");
+            //     showAlaret(params);
+            //     return false;
+            // }
+            $.ajax({
+                type: "POST",
+                url: `{{ route('qc.history.restore') }}`,
                 data: ({
                     id: id,
                     quantity_satuan: quantity_satuan,
