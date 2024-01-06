@@ -130,7 +130,7 @@ class JemputPesananController extends Controller
                     "jumlah" => str_replace('.', '', $layanan['qty_satuan']),
                     "harga_satuan" => $layanan['harga'],
                     "harga_jumlah" => str_replace('.', '', $layanan['qty_satuan']) * $layanan['harga'],
-                    "qty_special_treatment" => str_replace('.', '', $layanan['qty_special_treatment']),
+                    "qty_special_treatment" => $layanan['qty_special_treatment'] ? str_replace('.', '', $layanan['qty_special_treatment']) : 0,
                     "harga_special_treatment" => $layanan['harga_special_treatment'],
                     'harga_jumlah_special_treatment' => 0,
                     "total" => $layanan['total']
@@ -316,7 +316,7 @@ class JemputPesananController extends Controller
                     "jumlah" => str_replace('.', '', $layanan['qty_satuan']),
                     "harga_satuan" => $layanan['harga'],
                     "harga_jumlah" => str_replace('.', '', $layanan['qty_satuan']) * $layanan['harga'],
-                    "qty_special_treatment" => str_replace('.', '', $layanan['qty_special_treatment']),
+                    "qty_special_treatment" => $layanan['qty_special_treatment'] ? str_replace('.', '', $layanan['qty_special_treatment']) : 0,
                     "harga_special_treatment" => $layanan['harga_special_treatment'],
                     'harga_jumlah_special_treatment' => 0,
                     "total" => $layanan['total']

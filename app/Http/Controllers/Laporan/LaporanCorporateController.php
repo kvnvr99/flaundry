@@ -366,7 +366,7 @@ class LaporanCorporateController extends Controller
         
 
         $writer = new Xlsx($spreadsheet);
-        $filename = "Laporan " . $corporate->user->name . " Periode "  . ($request->startdate || $request->enddate ? (date('M Y', strtotime($request->startdate)) . ' - ' . date('M Y', strtotime($request->enddate))) : '-') .  ".xlsx";
+        $filename = "Laporan " . $corporate->user->name . " Periode "  . ($request->startdate ? (date('M Y', strtotime($request->startdate)) ) : '-') .  ".xlsx";
 
         // Save the file
         $writer->save($filename);

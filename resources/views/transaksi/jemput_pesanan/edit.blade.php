@@ -1195,7 +1195,8 @@
                         success: function(response) {
                             if (response.status == true) {
                                 let print_home =
-                                    `{{ url('jemput-pesanan/history') }}`;
+                                    `{{ url('jemput-pesanan/history') . '/' }}` + response
+                                    .kode_transaksi;
                                 // let print_url = `{{ url('jemput-pesanan/print') }}`;
                                 // let redirect_print_url = print_url + '/' + response
                                 //     .kode_transaksi;
