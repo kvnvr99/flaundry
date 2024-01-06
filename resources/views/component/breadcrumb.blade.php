@@ -5,20 +5,20 @@
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                     @php
-                        $segment = [Request::segment(1), Request::segment(2), Request::segment(3), Request::segment(4)]
+                        $segments = request()->segments();
                     @endphp
-                    @if ($segment[0] != '')
-                        <li class="breadcrumb-item"><a href="{{ url($segment[0]) }}">{{ ucwords(str_replace("-"," ",$segment[0])) }}</a></li>
-                    @endif
-                    @if ($segment[1] != '')
-                        <li class="breadcrumb-item"><a href="{{ url($segment[0].'/'.$segment[1]) }}">{{ ucwords(str_replace("-"," ",$segment[1])) }}</a></li>
-                    @endif
-                    @if ($segment[2] != '')
-                        <li class="breadcrumb-item"><a href="{{ url($segment[0].'/'.$segment[1].'/'.$segment[2]) }}">{{ ucwords(str_replace("-"," ",$segment[2])) }}</a></li>
-                    @endif
+                    @foreach($segments as $index => $segment)
+                        @if ($segment != '')
+                            @php
+                                $url = url(implode('/', array_slice($segments, 0, $index + 1)));
+                                $formattedSegment = ucwords(str_replace("-", " ", $segment));
+                            @endphp
+                            <li class="breadcrumb-item"><a href="{{ $url }}">{{ $formattedSegment }}</a></li>
+                        @endif
+                    @endforeach
                 </ol>
             </div>
-            {{-- <h4 class="page-title">{{ ucwords(str_replace("-"," ",Request::segment(count(request()->segments())))) }}</h4> --}}
+            {{-- <h4 class="page-title">{{ ucwords(str_replace("-"," ",end($segments))) }}</h4> --}}
         </div>
     </div>
 </div>

@@ -335,6 +335,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create/{id}', [JemputPesananController::class, 'create'])->name('jemput_pesanan.create');
         Route::get('/history', [JemputPesananController::class, 'history'])->name('jemput_pesanan.history');
         Route::post('/getDataHistory', [JemputPesananController::class, 'getDataHistory'])->name('jemput_pesanan.getDataHistory');
+        Route::get('/history/{kode_transaksi}/edit', [JemputPesananController::class, 'edit'])->name('jemput_pesanan.edit');
+        Route::get('/history/{kode_transaksi}', [JemputPesananController::class, 'detail'])->name('jemput_pesanan.detail');
+        Route::get('/history/{kode_transaksi}/deleteLayanan', [JemputPesananController::class, 'deleteLayanan'])->name('jemput_pesanan.deleteLayanan');
+        Route::get('/history/{kode_transaksi}/deleteImg', [JemputPesananController::class, 'deleteImg'])->name('jemput_pesanan.deleteImg');
+        Route::post('/update', [JemputPesananController::class, 'update'])->name('jemput_pesanan.update');
     });
     
     Route::prefix('jemput-non-pesanan')->middleware(['role_or_permission:Maintener|registrasi'])->group(function () {
