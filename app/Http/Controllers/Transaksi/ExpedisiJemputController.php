@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Transaksi;
 
 use DB;
 use Carbon\Carbon;
+use File;
 
 use Illuminate\Http\Request;
 use App\Models\ExpedisiJemput;
@@ -117,6 +118,15 @@ class ExpedisiJemputController extends Controller {
                 }
             }else{
                 $expedisijemput = $this->model->update($request->id, $data);
+                if($request->hasfile('images')) {
+                    $images = [];
+                    foreach($request->file('images') as $file) {
+                        $image = [];
+                        $image['expedisi_jemput_id'] = $expedisijemput->id;
+                        $image['image'] = $file->store('transaksi/penjemputan', 'public');
+                        $images [] = $this->images->store($image);
+                    }
+                }
             }
 
             Alert::toast('Data Berhasil Disimpan', 'success');
@@ -149,7 +159,12 @@ class ExpedisiJemputController extends Controller {
             ->where('permintaan_laundries.id',$id)
             ->get();
 
-            return view('transaksi.expedisi-jemput.form', compact('data'));
+            $images = DB::table('expedisi_jemput_images')->select('expedisi_jemput_images.*')
+                                    ->join('expedisi_jemputs', 'expedisi_jemputs.id', '=', 'expedisi_jemput_images.expedisi_jemput_id', 'left')
+                                    ->where('expedisi_jemputs.permintaan_laundry_id', $id)
+                                    ->get();
+
+            return view('transaksi.expedisi-jemput.form', compact('data', 'images'));
         } catch (\Throwable $e) {
             Alert::toast($e->getMessage(), 'error');
             return redirect()->route('expedisi-jemput');
@@ -203,6 +218,38 @@ class ExpedisiJemputController extends Controller {
             exit();
             Alert::toast($e->getMessage(), 'error');
             return redirect()->route('expedisi-jemput');
+        }
+    }
+
+    public function deleteImg(Request $request){
+        try {
+            DB::beginTransaction();
+            $data = ExpedisiJemputImage::find($request->id);
+            if (!$data) {
+                DB::rollback();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data not found',
+                ], 404);
+            }
+            $image_path = "./storage/" . $data->image;
+            if (File::exists($image_path)) {
+                File::delete($image_path);
+            }
+            $data->delete();
+            DB::commit();
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus',
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'err' => 'system_error',
+                'msg' => $th->getMessage()
+            ], 200);
         }
     }
 

@@ -224,6 +224,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/update', [ExpedisiJemputController::class, 'update'])->name('expedisi-jemput.update');
         Route::get('/destroy/{id}', [ExpedisiJemputController::class, 'destroy'])->name('expedisi-jemput.destroy');
         Route::post('/get-data-permintaan', [ExpedisiJemputController::class, 'getDataPermintaan'])->name('expedisi-jemput.get-data-permintaan');
+        Route::get('/edit/{id}/deleteImg', [ExpedisiJemputController::class, 'deleteImg'])->name('expedisi-jemput.edit.deleteImg');
     });
 
     Route::prefix('expedisi-jadwal-antar')->middleware(['role_or_permission:Maintener|jadwal-antar'])->group(function () {

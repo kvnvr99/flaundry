@@ -21,8 +21,8 @@
         .remove {
             display: block;
             /* background: #444;
-                                                                                                                                        border: 1px solid black;
-                                                                                                                                        color: white; */
+                                                                                                                                                    border: 1px solid black;
+                                                                                                                                                    color: white; */
             text-align: center;
             cursor: pointer;
             /* border-radius: 5px; */
@@ -152,6 +152,7 @@
                                                         </div>
                                                     </div>
                                                     <div id="image-preview"></div>
+                                                    <div id="loader"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -721,7 +722,7 @@
                         return false;
                     }
 
-                    // Loop melalui semua file yang dipilih
+                    // Loop through all selected files
                     for (let i = 0; i < files.length; i++) {
                         const file = files[i];
                         const imageType = /^image\//;
@@ -730,6 +731,9 @@
                             continue;
                         }
                         let currentInput = $('#images')[0];
+
+                        // Show loader here
+                        showLoader();
 
                         let fileReader = new FileReader();
                         fileReader.onload = (function(e) {
@@ -742,39 +746,61 @@
 
                             console.log(filesArray);
                             $(".remove", preview).click(function() {
-                                $(this).parent(".pip").remove();
-                                // Hapus gambar saat tombol "Hapus" diklik
-                                const fileIndex = filesArray.indexOf(file);
-                                if (fileIndex !== -1) {
-                                    filesArray.splice(fileIndex, 1);
-
-                                    handleChange();
-                                }
+                                Swal.fire({
+                                    title: 'Hapus image ini ?',
+                                    text: "Image ini akan dihapus!",
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: 'Hapus!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $(this).parent(".pip").remove();
+                                        // Remove the image when the "Remove" button is clicked
+                                        const fileIndex = filesArray.indexOf(file);
+                                        if (fileIndex !== -1) {
+                                            filesArray.splice(fileIndex, 1);
+                                            handleChange();
+                                        }
+                                    }
+                                });
                             });
+
+                            // Hide loader after successful loading
+                            hideLoader();
                         });
                         fileReader.readAsDataURL(file);
                         filesArray.push(file);
                         handleChange();
-                        function handleChange() {
-                            // Buat objek DataTransfer baru
-                            const newFilesList = new DataTransfer();
-    
-                            // Tambahkan file ke objek DataTransfer
-                            filesArray.forEach(file => newFilesList.items.add(
-                                file));
-    
-                            // Set nilai baru untuk file input
-                            images.files = newFilesList.files;
-    
-                            // Tambahkan event listener ke file input baru
-                            images.addEventListener("change",
-                                handleFileInputChange);
-                        }
                     }
-                    
                 });
+
+                function showLoader() {
+                    // Add code to show your loader (e.g., display a loading spinner)
+                    $("#loader").html('<i class="fas fa-spinner fa-spin"></i> Loading...');
+                }
+
+                function hideLoader() {
+                    // Add code to hide your loader
+                    $("#loader").empty();
+                }
+
+                function handleChange() {
+                    // Create a new DataTransfer object
+                    const newFilesList = new DataTransfer();
+
+                    // Add files to the DataTransfer object
+                    filesArray.forEach(file => newFilesList.items.add(file));
+
+                    // Set the new value for the file input
+                    images.files = newFilesList.files;
+
+                    // Add event listener to the new file input
+                    images.addEventListener("change", handleFileInputChange);
+                }
             } else {
-                Swal.fire('Browser Tidak Support !', 'error')
+                Swal.fire('Browser Tidak Support !', 'error');
             }
 
 
@@ -1195,8 +1221,9 @@
                         success: function(response) {
                             if (response.status == true) {
                                 let print_home =
-                                    `{{ url('jemput-pesanan/history') . '/' }}` + response
-                                    .kode_transaksi;
+                                    `{{ url('jemput-pesanan/history') }}`;
+                                // + response
+                                // .kode_transaksi;
                                 // let print_url = `{{ url('jemput-pesanan/print') }}`;
                                 // let redirect_print_url = print_url + '/' + response
                                 //     .kode_transaksi;

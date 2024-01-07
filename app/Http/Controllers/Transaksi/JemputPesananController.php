@@ -59,9 +59,10 @@ class JemputPesananController extends Controller
                                     ->where('permintaan_laundries.id', $id)
                                     ->first();
 
-            // $images = DB::table('expedisi_jemput_images')->select('expedisi_jemput_images.*')
-            //                         ->join('expedisi_jemputs', 'expedisi_jemputs.id', '=', 'expedisi_jemput_images.expedisi_jemput_id', 'left')
-            //                         ->where('expedisi_jemputs.permintaan_laundry_id', $id);
+            $images = DB::table('expedisi_jemput_images')->select('expedisi_jemput_images.*')
+                                    ->join('expedisi_jemputs', 'expedisi_jemputs.id', '=', 'expedisi_jemput_images.expedisi_jemput_id', 'left')
+                                    ->where('expedisi_jemputs.permintaan_laundry_id', $id)
+                                    ->get();
 
             return view('transaksi.jemput_pesanan.add', compact('info','outlets', 'parfumes', 'images'));
         } catch (\Throwable $e) {

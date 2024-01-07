@@ -21,8 +21,8 @@
         .remove {
             display: block;
             /* background: #444;
-                border: 1px solid black;
-                color: white; */
+                            border: 1px solid black;
+                            color: white; */
             text-align: center;
             cursor: pointer;
             /* border-radius: 5px; */
@@ -185,6 +185,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div id="image-preview"></div>
+                                                                <div id="loader"></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -538,10 +539,30 @@
                 $('#modal-corporate').modal('hide');
             });
 
+            function handleFileInputChange() {
+                const newInput = this; // 'this' mengacu pada elemen file input yang dipicu oleh perubahan
+
+                // Mendapatkan file yang baru dipilih
+                const newFiles = newInput.files;
+
+                // Lakukan sesuatu dengan file yang baru dipilih
+                for (let i = 0; i < newFiles.length; i++) {
+                    const newFile = newFiles[i];
+
+                    // Lakukan sesuatu dengan setiap file, misalnya, tampilkan informasi di konsol
+                    console.log(`File Baru: ${newFile.name}, Tipe: ${newFile.type}, Ukuran: ${newFile.size} bytes`);
+                }
+
+                // Anda dapat menambahkan logika lain sesuai kebutuhan Anda di sini
+            }
+
             if (window.File && window.FileList && window.FileReader) {
-                $("#images").on("change", function(e) {
-                    const files = e.target.files,
-                        filesLength = files.length;
+                let filesArray = [];
+                const images = document.getElementById("images");
+
+                images.addEventListener("change", function() {
+                    const files = this.files;
+                    const filesLength = files.length;
                     if (filesLength > 10) {
                         const Toast = Swal.mixin({
                             toast: true,
@@ -561,24 +582,86 @@
                         $('#images').val('');
                         return false;
                     }
-                    for (let i = 0; i < filesLength; i++) {
-                        let f = files[i]
+
+                    // Loop through all selected files
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const imageType = /^image\//;
+
+                        if (!imageType.test(file.type)) {
+                            continue;
+                        }
+                        let currentInput = $('#images')[0];
+
+                        // Show loader here
+                        showLoader();
+
                         let fileReader = new FileReader();
                         fileReader.onload = (function(e) {
-                            let file = e.target;
-                            $("<span class=\"pip\">" +
+                            let loadedFile = e.target; // Use a different variable name here
+                            let preview = $("<span class=\"pip\">" +
                                 "<img class=\"thumbnail\" src=\"" + e.target.result +
-                                "\" title=\"" + files.name + "\"/>" +
+                                "\" title=\"" + files[i].name + "\"/>" +
+                                "<br/><span class=\"remove\">Remove</span>" +
                                 "</span>").insertAfter("#image-preview");
-                            $(".remove").click(function() {
-                                $(this).parent(".pip").remove();
+
+                            console.log(filesArray);
+                            $(".remove", preview).click(function() {
+                                Swal.fire({
+                                    title: 'Hapus image ini ?',
+                                    text: "Image ini akan dihapus!",
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: 'Hapus!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $(this).parent(".pip").remove();
+                                        // Remove the image when the "Remove" button is clicked
+                                        const fileIndex = filesArray.indexOf(file);
+                                        if (fileIndex !== -1) {
+                                            filesArray.splice(fileIndex, 1);
+                                            handleChange();
+                                        }
+                                    }
+                                });
                             });
+
+                            // Hide loader after successful loading
+                            hideLoader();
                         });
-                        fileReader.readAsDataURL(f);
+                        fileReader.readAsDataURL(file);
+                        filesArray.push(file);
+                        handleChange();
                     }
                 });
+
+                function showLoader() {
+                    // Add code to show your loader (e.g., display a loading spinner)
+                    $("#loader").html('<i class="fas fa-spinner fa-spin"></i> Loading...');
+                }
+
+                function hideLoader() {
+                    // Add code to hide your loader
+                    $("#loader").empty();
+                }
+
+                function handleChange() {
+                    // Create a new DataTransfer object
+                    const newFilesList = new DataTransfer();
+
+                    // Add files to the DataTransfer object
+                    filesArray.forEach(file => newFilesList.items.add(file));
+
+                    // Set the new value for the file input
+                    images.files = newFilesList.files;
+
+                    // Add event listener to the new file input
+                    images.addEventListener("change", handleFileInputChange);
+                }
             } else {
-                Swal.fire('Browser Tidak Support !', 'error')
+                Swal.fire('Browser Tidak Support !', 'error');
             }
 
             $(document).on('click', '.show-layanan', function(e) {
@@ -750,7 +833,7 @@
 
             $(document).on('keyup', '.layanan_qty_satuan', function(e) {
                 let formattedValue = formatNumber(parseNumber(this
-                .value)); // Format and then parse the value
+                    .value)); // Format and then parse the value
                 this.value = formattedValue; // Update the input value
 
                 if (/^0/.test(this.value)) {
@@ -762,7 +845,7 @@
                 let layanan_qty_special_treatment = this_row.find('.layanan_qty_special_treatment').val() ||
                     0;
                 let layanan_harga_special_treatment = this_row.find('.layanan_harga_special_treatment')
-                .val() || 0;
+                    .val() || 0;
                 let total_special_treatment = parseInt(layanan_qty_special_treatment) * parseInt(
                     layanan_harga_special_treatment) || 0;
 
@@ -799,7 +882,7 @@
 
             $(document).on('keyup', '.layanan_qty_special_treatment', function(e) {
                 let formattedValue = formatNumber(parseNumber(this
-                .value)); // Format and then parse the value
+                    .value)); // Format and then parse the value
                 this.value = formattedValue; // Update the input value
                 if (/^0/.test(this.value)) {
                     this.value = this.value.replace(/^0/, "")
