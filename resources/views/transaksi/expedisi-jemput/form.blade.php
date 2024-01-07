@@ -22,8 +22,8 @@
         .remove {
             display: block;
             /* background: #444;
-                border: 1px solid black;
-                color: white; */
+                        border: 1px solid black;
+                        color: white; */
             text-align: center;
             cursor: pointer;
             /* border-radius: 5px; */
@@ -99,9 +99,9 @@
             <div class="form-group mb-3">
                 <label class="required">Titip Saldo</label>
                 <input
-                    value="{{ !isset($data['detail']) ? old('titip_saldo') : old('titip_saldo', $data['detail'][0]->titip_saldo) }}"
-                    type="text" name="titip_saldo" class="form-control active mb-2 @error('titip_saldo') is-invalid @enderror"
-                    placeholder="titip saldo">
+                    value="{{ !isset($data['detail']) ? old('titip_saldo') : 'Rp ' . number_format($data['detail'][0]->titip_saldo, 0, ',', '.') }}"
+                    type="text" name="titip_saldo" class="form-control active mb-2 @error('titip_saldo') is-invalid @enderror" autocomplete="off"
+                    placeholder="titip saldo" id="titip_saldo">
                 <input value="{{ !isset($data['detail']) ? old('image') : old('image', $data['detail'][0]->image) }}" type="hidden"
                     name="image" class="form-control active mb-2 @error('image') is-invalid @enderror" placeholder="image">
             </div>
@@ -341,35 +341,65 @@
         }
 
         $(".deleteImg").click(function(e) {
-                let another = this;
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Hapus image ini ?',
-                    text: "Anda tidak akan dapat memulihkan image ini!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Hapus!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ route('expedisi-jemput.edit.deleteImg', $data['detail'][0]->id) }}",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                "_method": "GET",
-                                "id": $(this).data('id'),
-                            },
-                            success: function() {
-                                $(another).parent(".pip").remove();
-                                Swal.fire("Berhasil!",
-                                    "Berhasil dihapus.",
-                                    "success");
-                            }
-                        });
-                    }
-                });
+            let another = this;
+            e.preventDefault();
+            Swal.fire({
+                title: 'Hapus image ini ?',
+                text: "Anda tidak akan dapat memulihkan image ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('expedisi-jemput.edit.deleteImg', $data['detail'][0]->id) }}",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "_method": "GET",
+                            "id": $(this).data('id'),
+                        },
+                        success: function() {
+                            $(another).parent(".pip").remove();
+                            Swal.fire("Berhasil!",
+                                "Berhasil dihapus.",
+                                "success");
+                        }
+                    });
+                }
             });
+        });
+
+        $('#titip_saldo').on('input', function() {
+            if (this.value !== '') {
+                let formattedValue = formatRupiah(parseRupiah(this.value));
+                this.value = formattedValue;
+            }
+        });
+
+        function formatRupiah(amount) {
+            // Use Number.prototype.toLocaleString() to format the number as currency
+            return 'Rp ' + Number(amount).toLocaleString('id-ID');
+        }
+
+        function parseRupiah(rupiahString) {
+            // Remove currency symbol, separators, and parse as integer
+            const parsedValue = parseInt(rupiahString.replace(/[^\d]/g, ''));
+            return isNaN(parsedValue) ? 0 : parsedValue;
+        }
+
+        function formatNumber(number) {
+            // Use Number.prototype.toLocaleString() to format the number as currency
+            return Number(number).toLocaleString('id-ID');
+        }
+
+        function parseNumber(number) {
+            // Remove currency symbol, separators, and parse as integer
+            // Replace dot only if it exists in the number
+            const parsedValue = parseInt(number.replace(/[^\d]/g, ''));
+            return isNaN(parsedValue) ? 0 : parsedValue;
+        }
     </script>
 @endpush

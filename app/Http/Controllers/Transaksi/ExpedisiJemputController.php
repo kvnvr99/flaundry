@@ -93,7 +93,11 @@ class ExpedisiJemputController extends Controller {
 
     public function store(ExpedisiJemputRequest $request) {
         try {
-            $data = $request->except(['_token', '_method', 'id', 'nama', 'waktu', 'alamat', 'tanggal', 'image']);
+            $data = [
+                'catatan' => $request->catatan,
+                'permintaan_laundry_id' => $request->permintaan_laundry_id,
+                'titip_saldo' => $request->titip_saldo ? str_replace(['Rp ', '.'], '', $request->titip_saldo) : 0,
+            ];
             $waktu = date('Y-m-d H:i:s');
             
             DB::update("update permintaan_laundries set status_jemput = '1', picked_at = '".$waktu."' where permintaan_laundries.id= " .$request->permintaan_laundry_id);
@@ -185,8 +189,12 @@ class ExpedisiJemputController extends Controller {
     public function update(ExpedisiJemputRequest $request) {
         
         try {
-            $data = $request->except(['_token', '_method', 'id', 'nama', 'nominal_old']);
-            
+            $data = [
+                'catatan' => $request->catatan,
+                'permintaan_laundry_id' => $request->permintaan_laundry_id,
+                'titip_saldo' => $request->titip_saldo ? str_replace(['Rp ', '.'], '', $request->titip_saldo) : 0,
+            ];
+
             if($request->id==''){
                 $user = $this->model->create($data);
                 DB::update('update permintaan_laundries set status_jemput = 1 where permintaan_laundries.id= ' .$request->permintaan_laundry_id);

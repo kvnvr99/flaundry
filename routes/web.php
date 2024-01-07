@@ -191,6 +191,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create/{id}', [RequestLaundryController::class, 'create'])->name('request-laundry.create');
         Route::get('/history', [RequestLaundryController::class, 'history'])->name('request-laundry.history');
         Route::post('/getDataHistory', [RequestLaundryController::class, 'getDataHistory'])->name('request-laundry.getDataHistory');
+        Route::get('/history/{kode_transaksi}/edit', [RequestLaundryController::class, 'edit'])->name('request-laundry.edit');
+        Route::get('/history/{kode_transaksi}', [RequestLaundryController::class, 'detail'])->name('request-laundry.detail');
+        Route::get('/history/{kode_transaksi}/deleteLayanan', [RequestLaundryController::class, 'deleteLayanan'])->name('request-laundry.deleteLayanan');
+        Route::get('/history/{kode_transaksi}/deleteImg', [RequestLaundryController::class, 'deleteImg'])->name('request-laundry.deleteImg');
+        Route::post('/update', [RequestLaundryController::class, 'update'])->name('request-laundry.update');
     });
 
     Route::prefix('top-up')->middleware(['role_or_permission:Maintener|topup-member'])->group(function () {

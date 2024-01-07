@@ -872,100 +872,100 @@
 
 
 
-            $(document).on('click', '.show-layanan', function(e) {
-                e.preventDefault();
-                let kategori_layanan = $('#selectize-tags').val();
-                let pelanggan = $('#selectize-pelanggan').val();
-                let index_row = $(this).parent().parent().attr('childidx');
-                let table = $('#state-saving-datatable-layanan').DataTable();
-                table.destroy();
-                $('#modal-layanan').modal('show');
-                $('.index_row').val(index_row)
-                $('#state-saving-datatable-layanan').DataTable({
-                    responsive: true,
-                    processing: true,
-                    serverSide: true,
-                    method: "POST",
-                    scrollX: true,
-                    // bDestroy: true,
-                    ajax: {
-                        url: "{!! route('registrasi.get-data-layanan') !!}",
-                        type: "POST",
-                        dataType: "JSON",
-                        data: ({
-                            kategori: kategori_layanan,
-                            member: pelanggan
-                        })
-                    },
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'id'
-                        },
-                        {
-                            data: 'kode',
-                            name: 'kode'
-                        },
-                        {
-                            data: 'nama',
-                            name: 'nama'
-                        },
-                        {
-                            mRender: function(data, type, row, meta) {
-                                if (row.harga == '' || row.harga == 0) {
-                                    return '-';
-                                } else {
-                                    let harga = 'Rp. ' + row.harga;
-                                    return harga;
-                                }
-                            }
-                        },
-                        {
-                            mRender: function(data, type, row, meta) {
-                                let action_button = '<div>';
-                                action_button +=
-                                    '<input type="radio" name="radio" class="radio1" value="' +
-                                    row.kode + '" data-id="' + row.id +
-                                    '" data-nama="' +
-                                    row.nama + '" data-harga="' + row
-                                    .harga +
-                                    '"  data-harga_member="' + row
-                                    .harga_member +
-                                    '" data-jenis_item="' + row
-                                    .jenis_item + '">';
-                                action_button += ' </div>';
-                                return action_button;
-                            }
-                        },
-                    ]
-                });
+            // $(document).on('click', '.show-layanan', function(e) {
+            //     e.preventDefault();
+            //     let kategori_layanan = $('#selectize-tags').val();
+            //     let pelanggan = $('#selectize-pelanggan').val();
+            //     let index_row = $(this).parent().parent().attr('childidx');
+            //     let table = $('#state-saving-datatable-layanan').DataTable();
+            //     table.destroy();
+            //     $('#modal-layanan').modal('show');
+            //     $('.index_row').val(index_row)
+            //     $('#state-saving-datatable-layanan').DataTable({
+            //         responsive: true,
+            //         processing: true,
+            //         serverSide: true,
+            //         method: "POST",
+            //         scrollX: true,
+            //         // bDestroy: true,
+            //         ajax: {
+            //             url: "{!! route('registrasi.get-data-layanan') !!}",
+            //             type: "POST",
+            //             dataType: "JSON",
+            //             data: ({
+            //                 kategori: kategori_layanan,
+            //                 member: pelanggan
+            //             })
+            //         },
+            //         columns: [{
+            //                 data: 'DT_RowIndex',
+            //                 name: 'id'
+            //             },
+            //             {
+            //                 data: 'kode',
+            //                 name: 'kode'
+            //             },
+            //             {
+            //                 data: 'nama',
+            //                 name: 'nama'
+            //             },
+            //             {
+            //                 mRender: function(data, type, row, meta) {
+            //                     if (row.harga == '' || row.harga == 0) {
+            //                         return '-';
+            //                     } else {
+            //                         let harga = 'Rp. ' + row.harga;
+            //                         return harga;
+            //                     }
+            //                 }
+            //             },
+            //             {
+            //                 mRender: function(data, type, row, meta) {
+            //                     let action_button = '<div>';
+            //                     action_button +=
+            //                         '<input type="radio" name="radio" class="radio1" value="' +
+            //                         row.kode + '" data-id="' + row.id +
+            //                         '" data-nama="' +
+            //                         row.nama + '" data-harga="' + row
+            //                         .harga +
+            //                         '"  data-harga_member="' + row
+            //                         .harga_member +
+            //                         '" data-jenis_item="' + row
+            //                         .jenis_item + '">';
+            //                     action_button += ' </div>';
+            //                     return action_button;
+            //                 }
+            //             },
+            //         ]
+            //     });
 
-            });
+            // });
 
-            $('#state-saving-datatable-layanan tbody').on('click', 'tr', function() {
-                var row = $(this);
-                row.find('.input[type="radio"]').attr('checked', 'checked');
-                let id = row.find('input[type="radio"]').data('id');
-                let kode = row.find('input[type="radio"]').val();
-                let nama = row.find('input[type="radio"]').data('nama');
-                let harga = row.find('input[type="radio"]').data('harga');
-                let jenis_item = row.find('input[type="radio"]').data('jenis_item');
-                let index_row = $('.index_row').val();
-                let this_row = $(document).find(`.layanan-selected-list[childidx=${index_row}]`);
-                this_row.find(".form-control").prop('readonly', false);
-                this_row.find(".form-control").css('background-color', '#FFF');
-                this_row.find('.layanan_nama_label').html(nama);
-                let harga_label = numberFormater(parseInt(harga));
-                this_row.find('.layanan_harga_label').html('Rp. ' + harga_label + '/' + jenis_item);
-                this_row.find('.layanan_id').val(id);
-                this_row.find('.layanan_nama').val(nama);
-                this_row.find('.layanan_harga').val(harga);
+            // $('#state-saving-datatable-layanan tbody').on('click', 'tr', function() {
+            //     var row = $(this);
+            //     row.find('.input[type="radio"]').attr('checked', 'checked');
+            //     let id = row.find('input[type="radio"]').data('id');
+            //     let kode = row.find('input[type="radio"]').val();
+            //     let nama = row.find('input[type="radio"]').data('nama');
+            //     let harga = row.find('input[type="radio"]').data('harga');
+            //     let jenis_item = row.find('input[type="radio"]').data('jenis_item');
+            //     let index_row = $('.index_row').val();
+            //     let this_row = $(document).find(`.layanan-selected-list[childidx=${index_row}]`);
+            //     this_row.find(".form-control").prop('readonly', false);
+            //     this_row.find(".form-control").css('background-color', '#FFF');
+            //     this_row.find('.layanan_nama_label').html(nama);
+            //     let harga_label = numberFormater(parseInt(harga));
+            //     this_row.find('.layanan_harga_label').html('Rp. ' + harga_label + '/' + jenis_item);
+            //     this_row.find('.layanan_id').val(id);
+            //     this_row.find('.layanan_nama').val(nama);
+            //     this_row.find('.layanan_harga').val(harga);
 
-                cloneSumTotal();
+            //     cloneSumTotal();
 
-                let table = $('#state-saving-datatable-layanan').DataTable();
-                table.destroy();
-                $('#modal-layanan').modal('hide');
-            });
+            //     let table = $('#state-saving-datatable-layanan').DataTable();
+            //     table.destroy();
+            //     $('#modal-layanan').modal('hide');
+            // });
 
             function cloneSumTotal(){
                 let sum = 0;
