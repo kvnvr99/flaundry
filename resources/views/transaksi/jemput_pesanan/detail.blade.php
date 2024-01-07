@@ -69,7 +69,7 @@
                                         @foreach ($images as $val)
                                             <span class="pip"><img class="thumbnail"
                                                     src="{{ asset('storage/') . '/' . $val->image }}"><br /><span
-                                                    class="remove deleteImg"
+                                                    class="remove"
                                                     data-id="{{ $val->id }}">Remove</span></span>
                                         @endforeach
                                     </div>

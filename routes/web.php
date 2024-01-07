@@ -351,6 +351,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store', [JemputNonPesananController::class, 'store'])->name('jemput_non_pesanan.store');
         Route::get('/history', [JemputNonPesananController::class, 'history'])->name('jemput_non_pesanan.history');
         Route::post('/getDataHistory', [JemputNonPesananController::class, 'getDataHistory'])->name('jemput_non_pesanan.getDataHistory');
+        Route::get('/history/{kode_transaksi}/edit', [JemputNonPesananController::class, 'edit'])->name('jemput_non_pesanan.edit');
+        Route::get('/history/{kode_transaksi}', [JemputNonPesananController::class, 'detail'])->name('jemput_non_pesanan.detail');
+        Route::get('/history/{kode_transaksi}/deleteLayanan', [JemputNonPesananController::class, 'deleteLayanan'])->name('jemput_non_pesanan.deleteLayanan');
+        Route::get('/history/{kode_transaksi}/deleteImg', [JemputNonPesananController::class, 'deleteImg'])->name('jemput_non_pesanan.deleteImg');
+        Route::post('/update', [JemputNonPesananController::class, 'update'])->name('jemput_non_pesanan.update');
     });
 
     Route::prefix('laporan-member')->middleware(['role_or_permission:Maintener|laporan'])->group(function () {

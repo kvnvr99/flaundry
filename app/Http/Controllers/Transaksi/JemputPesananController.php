@@ -49,7 +49,6 @@ class JemputPesananController extends Controller
 
             $outlets = Outlet::get();
             $parfumes = Parfume::get();
-            $images = ExpedisiJemputImage::get();
 
             $info = DB::table('permintaan_laundries')->select('permintaan_laundries.*', 'users.name as nama', 'parfumes.nama as nama_parfume', 'layanans.nama as nama_layanan','corporate.id as corporate_id', 'corporate.phone')
                                     ->join('corporate', 'corporate.id', '=', 'permintaan_laundries.corporate_id', 'left')
@@ -254,7 +253,6 @@ class JemputPesananController extends Controller
 
             $outlets = Outlet::get();
             $parfumes = Parfume::get();
-            $images = ExpedisiJemputImage::get();
 
             $info = DB::table('transaksis')
                 ->select('transaksis.*')
@@ -433,7 +431,6 @@ class JemputPesananController extends Controller
 
             $outlets = Outlet::get();
             $parfumes = Parfume::get();
-            $images = ExpedisiJemputImage::get();
 
             $info = DB::table('transaksis')->select('transaksis.*')
                                     ->join('corporate', 'corporate.id', '=', 'transaksis.corporate_id', 'left')
