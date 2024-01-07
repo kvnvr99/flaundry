@@ -21,8 +21,8 @@
         .remove {
             display: block;
             /* background: #444;
-                                                                                                                                                    border: 1px solid black;
-                                                                                                                                                    color: white; */
+                                                                                                                                        border: 1px solid black;
+                                                                                                                                        color: white; */
             text-align: center;
             cursor: pointer;
             /* border-radius: 5px; */
@@ -62,58 +62,127 @@
                         <div class="card">
                             <div class="card-body">
                                 <form method="POST" id="form-transaksi" enctype="multipart/form-data"
-                                    action="{{ route('jemput_non_pesanan.store') }}">
+                                    action="{{ route('registrasi.store') }}">
                                     @csrf
                                     <div class="row">
                                         <label class="col-md-3 col-form-label">Gambar Cucian</label>
                                         @foreach ($images as $val)
                                             <span class="pip"><img class="thumbnail"
                                                     src="{{ asset('storage/') . '/' . $val->image }}"><br /><span
-                                                    class="remove deleteImg"
+                                                    class="remove"
                                                     data-id="{{ $val->id }}">Remove</span></span>
                                         @endforeach
                                     </div>
                                     <br><br><br>
                                     <div class="row">
                                         <div class="col-12">
-                                            <div class="form-group row mb-3 pilih_member">
-                                                <label class="col-md-3 col-form-label"
-                                                    for="triggerCorporate">Pilih
-                                                    Corporate</label>
+                                            <div class="form-group row mb-3">
+                                                <label class="col-md-3 col-form-label">Outlet</label>
+                                                <div class="col-md-9">
+                                                    <div class="selectize-control multi">
+                                                        <div style="height: auto;"
+                                                            class="selectize-input items not-full has-options has-items">
+                                                            @foreach ($outlets as $outlet)
+                                                                <div class="select-input item-outlet"
+                                                                    data-value="{{ $outlet->id }}">
+                                                                    {{ $outlet->nama }}</div>
+                                                            @endforeach
+                                                            <input type="text" autocomplete="off" tabindex=""
+                                                                id="selectize-outlet-selectized"
+                                                                style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
+                                                        </div>
+                                                        <div class="selectize-dropdown multi" style="display: none;">
+                                                            <div class="selectize-dropdown-content"></div>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" name="outlet" id="selectize-outlet"
+                                                        value="{{ $info->outlet_id }}" tabindex="-1" class="selectized"
+                                                        style="display: none;">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row mb-3">
+                                                <label class="col-md-3 col-form-label">Kategori Layanan</label>
+                                                <div class="col-md-9">
+                                                    <div class="selectize-control multi">
+                                                        <div class="selectize-input items not-full has-options has-items">
+                                                            <div class="select-input item" data-value="reguler">
+                                                                REG</div>
+                                                            <div class="select-input item" data-value="express">
+                                                                EXPRESS</div>
+                                                            <div class="select-input item" data-value="super_express">SUPER
+                                                                EXPRESS</div>
+                                                            <input type="text" autocomplete="off" tabindex=""
+                                                                id="selectize-tags-selectized"
+                                                                style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
+                                                        </div>
+                                                        <div class="selectize-dropdown multi" style="display: none;">
+                                                            <div class="selectize-dropdown-content"></div>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" name="kategori" id="selectize-tags" tabindex="-1"
+                                                        value="{{ $info->kategori }}" class="selectized"
+                                                        style="display: none;">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row mb-3">
+                                                <label class="col-md-3 col-form-label">Kategori
+                                                    Pelanggan</label>
+                                                <div class="col-md-9">
+                                                    <div class="selectize-control multi">
+                                                        <div class="selectize-input items not-full has-options has-items">
+                                                            <div class="select-input item-pelanggan"
+                                                                data-value="non_member">NON MEMBER</div>
+                                                            <div class="select-input item-pelanggan" data-value="member">
+                                                                MEMBER</div>
+                                                            {{-- <div class="select-input item-pelanggan" data-value="khusus">KHUSUS</div> --}}
+                                                            <input type="text" autocomplete="off" tabindex=""
+                                                                id="selectize-pelanggan-selectized"
+                                                                style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
+                                                        </div>
+                                                        <div class="selectize-dropdown multi" style="display: none;">
+                                                            <div class="selectize-dropdown-content"></div>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" id="selectize-pelanggan" name="pelanggan"
+                                                        tabindex="-1" class="selectized" style="display: none;">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row mb-3 pilih_member" style="display: none;">
+                                                <label class="col-md-3 col-form-label" for="show-member">Pilih
+                                                    Member</label>
                                                 <div class="col-md-4">
-                                                    <button type="button" id="triggerCorporate"
-                                                        class="btn btn-secondary" data-toggle="modal"
-                                                        data-target="#modal-corporate"><i
+                                                    <button type="button" id="show-member" class="btn btn-secondary"
+                                                        data-toggle="modal" data-target="#modal-member"><i
                                                             class="fas fa-search"></i></button>
                                                 </div>
                                             </div>
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-3 col-form-label" for="nama">Nama</label>
                                                 <div class="col-md-9">
-                                                    <input readonly type="text"
+                                                    <input readonly type="text" value="{{ $info->nama }}" readonly
                                                         class="form-control data-pelanggan first-outlet" id="nama"
-                                                        name="nama" value="{{ $info->nama }}" readonly>
-                                                    <input type="hidden" class="form-control" id="corporate_id"
-                                                        name="corporate_id" value="{{ $info->corporate_id }}">
-                                                    <input type="hidden" class="form-control" id="inputId" name="id"
-                                                        value="{{ $info->id }}">
+                                                        name="nama">
+                                                    <input type="hidden" class="form-control" id="member_id"
+                                                        value="{{ $info->member_id }}" name="member_id">
+                                                    <input type="hidden" class="form-control" id="inputId"
+                                                        name="id" value="{{ $info->id }}">
                                                 </div>
                                             </div>
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-3 col-form-label" for="alamat">Alamat</label>
                                                 <div class="col-md-9">
-                                                    <input readonly type="text"
+                                                    <input readonly type="text" readonly
                                                         class="form-control data-pelanggan first-outlet" id="alamat"
-                                                        name="alamat" value="{{ $info->alamat }}">
+                                                        value="{{ $info->alamat }}" name="alamat">
                                                 </div>
                                             </div>
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-3 col-form-label" for="no_handphone">No
                                                     Handphone</label>
                                                 <div class="col-md-9">
-                                                    <input readonly type="text"
+                                                    <input readonly type="text" value="{{ $info->no_handphone }}" readonly
                                                         class="form-control data-pelanggan first-outlet" id="no_handphone"
-                                                        name="no_handphone" value="{{ $info->no_handphone }}">
+                                                        name="no_handphone">
                                                 </div>
                                             </div>
                                             {{-- <div class="form-group row mb-3">
@@ -148,7 +217,7 @@
                                             </div>
                                             <div class="form-group mb-3">
                                                 <label for="example-textarea">Catatan</label>
-                                                <textarea class="form-control" name="note" id="example-textarea" rows="5">{{ $info->note }}</textarea>
+                                                <textarea class="form-control" name="note" id="example-textarea" rows="5" readonly>{{ $info->note }}</textarea>
                                             </div>
                                             <div class="form-group row mb-3">
                                                 <label class="col-3 col-form-label">Gambar Cucian</label>
@@ -157,13 +226,12 @@
                                                         <div class="custom-file">
                                                             <input accept="image/png, image/gif, image/jpeg, image/jpg"
                                                                 multiple name="images[]" type="file"
-                                                                class="custom-file-input" id="images">
+                                                                class="custom-file-input" id="images" disabled>
                                                             <label class="custom-file-label" for="images">Upload
                                                                 Beberapa Gambar(Max 10)</label>
                                                         </div>
                                                     </div>
                                                     <div id="image-preview"></div>
-                                                    <div id="loader"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -179,9 +247,8 @@
                                                             <th class="text-center" width="15%">Nama Layanan</th>
                                                             <th class="text-center" width="15%">Harga Satuan</th>
                                                             <th class="text-center">Quantity</th>
-                                                            <th class="text-center">Quantity Return</th>
+                                                            <th class="text-center">Quantity Special Treatment</th>
                                                             <th class="text-center" width="15%">Total</th>
-                                                            <th class="text-center action-buton" width="4%">Aksi</th>
                                                         </tr>
                                                     </thead>
                                                     @foreach ($transaksi_detail as $key => $row)
@@ -203,15 +270,22 @@
                                                                     name="layanan[{{ $key }}][id]"
                                                                     autocomplete="off" value="{{ $row->harga_id }}" />
                                                             </td>
+                                                            @php
+                                                                if ($info->member_id !== 0) {
+                                                                    $harga = $row->harga_member;
+                                                                }else{
+                                                                    $harga = $row->harga;
+                                                                }
+                                                            @endphp
                                                             <td class="text-right no-padding" width="15%">
                                                                 <span class="layanan_harga_label">
-                                                                    Rp. {{ number_format($row->harga, 2, ',', '.') }}
+                                                                    Rp. {{ number_format($harga, 2, ',', '.') }}
                                                                 </span>
                                                                 <input data-toggle="modal" readonly
                                                                     class="form-control text-right show-layanan layanan_harga"
                                                                     type="hidden"
                                                                     name="layanan[{{ $key }}][harga]"
-                                                                    autocomplete="off" value="{{ $row->harga }}" />
+                                                                    autocomplete="off" value="{{ $harga }}" />
                                                                 <input data-toggle="modal" readonly
                                                                     class="form-control text-right show-layanan kode_layanan"
                                                                     type="hidden"
@@ -224,7 +298,7 @@
                                                                     class="form-control no-padding layanan_qty_satuan text-right"
                                                                     required
                                                                     value="{{ number_format($row->jumlah, 0, ',', '.') }}"
-                                                                    maxlength="9" type="text"
+                                                                    maxlength="9" type="text" readonly
                                                                     name="layanan[0][qty_satuan]" autocomplete="off"
                                                                     onkeypress="return isNumber(event)" />
                                                             </td>
@@ -234,7 +308,7 @@
                                                                     value="{{ number_format($row->qty_special_treatment, 0, ',', '.') }}"
                                                                     type="text" maxlength="9"
                                                                     name="layanan[{{ $key }}][qty_special_treatment]"
-                                                                    autocomplete="off"
+                                                                    autocomplete="off" readonly
                                                                     onkeypress="return isNumber(event)" />
                                                             </td>
                                                             <input
@@ -246,23 +320,13 @@
                                                             <td class="text-right" width="15%">
                                                                 <span class="layanan_total_label">
                                                                     Rp.
-                                                                    {{ number_format($row->harga * $row->jumlah, 2, ',', '.') }}
+                                                                    {{ number_format($harga * $row->jumlah + $row->qty_special_treatment * 25000, 2, ',', '.') }}
                                                                 </span>
                                                                 <input data-toggle="modal" readonly
                                                                     class="form-control text-left show-layanan layanan_total"
-                                                                    value="{{ $row->harga * $row->jumlah }}"
+                                                                    value="{{ $harga * $row->jumlah + $row->qty_special_treatment * 25000 }}"
                                                                     type="hidden"
                                                                     name="layanan[{{ $key }}][total]"
-                                                                    autocomplete="off" />
-                                                            </td>
-                                                            <td class="action-buton" width="4%">
-                                                                <a class='btn btn-sm btn-danger removelayanan'
-                                                                    type='button'><i class="fas fa-trash-alt"></i></a>
-                                                                <input class="data-id" type="hidden"
-                                                                    autocomplete="off" />
-                                                                <input type="hidden"
-                                                                    name="layanan[{{ $key }}][transaksi_detail_id]"
-                                                                    value="{{ $row->id }}" id="transaksi_detail_id"
                                                                     autocomplete="off" />
                                                             </td>
                                                         </tr>
@@ -289,12 +353,47 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div style="float: right;" class="row">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group row mb-3">
+                                                <label class="col-md-3 col-form-label">Pembayaran</label>
+                                                <div class="col-md-9">
+                                                    <div class="selectize-control multi">
+                                                        <div class="selectize-input items not-full has-options has-items">
+                                                            <div class="select-input item-pembayaran" data-value="tunai">
+                                                                TUNAI</div>
+                                                            <div class="select-input item-pembayaran"
+                                                                data-value="non_tunai">NON TUNAI</div>
+                                                            <div class="select-input item-pembayaran"
+                                                                data-value="pot_deposit">POT DEPOSIT</div>
+                                                            <input type="text" autocomplete="off" tabindex=""
+                                                                id="selectize-pembayaran-selectized"
+                                                                style="width: 4px; opacity: 0; position: absolute; left: -10000px;">
+                                                        </div>
+                                                        <div class="selectize-dropdown multi" style="display: none;">
+                                                            <div class="selectize-dropdown-content"></div>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" name="pembayaran" id="selectize-pembayaran" value="{{$info->pembayaran}}"
+                                                        tabindex="-1" class="selectized" style="display: none;">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row mb-3">
+                                                <label class="col-md-3 col-form-label" for="bayar">Bayar</label>
+                                                <div class="col-md-9">
+                                                    <input readonly type="text" class="form-control first-outlet" value="Rp {{number_format($info->bayar, 0, ',', '.')}}"
+                                                        id="bayar" name="bayar" autocomplete="off"
+                                                        onkeypress="return isNumber(event)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- <div style="float: right;" class="row">
                                         <div class="col-md-6">
                                             <button type="button" class="btn btn-dark btn-square triggerLayanan">Tambah
                                                 Layanan</button>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- <br>
                                 <br>
                                 <br>
@@ -323,13 +422,13 @@
                                         </div>
                                     </div>
                                 </div> --}}
-                                    <div style="float: right;" class="row mt-5">
+                                    {{-- <div style="float: right;" class="row mt-5">
                                         <ul class="list-inline wizard mb-0">
                                             <li class="next list-inline-item float-right">
                                                 <button type="submit" class="btn btn-secondary">Update</button>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> --}}
                                 </form>
                             </div>
                         </div>
@@ -385,12 +484,12 @@
             </td>
         </tr>
     </table>
-    <div id="modal-corporate" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+    <div id="modal-member" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
         aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myLargeModalLabel">List Corporate</h4>
+                    <h4 class="modal-title" id="myLargeModalLabel">List Member</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -486,124 +585,71 @@
 
         $(document).ready(function() {
 
-            sum_layanan_qty_special_treatment();
-            sum_layanan_qty_satuan();
             cloneSumTotal();
+            sumQtySatuan();
+            sumQtySpecialTreatment();
 
 
-            $('.item').click(function(e) {
-                e.preventDefault();
-                let outletID = $('#selectize-outlet').val();
-                console.log(outletID);
-                if (outletID == '') {
-                    let params = {
-                        icon: 'warning',
-                        title: 'Silahkan Pilih Outlet !',
-                        text: 'Pastikan nama outlet sudah sesuai !'
-                    }
-                    showAlaret(params);
-                    return false;
-                }
-                let value = $(this).data('value');
-                $('.item').not(this).each(function() {
-                    $(this).css("background-color", "#edeff1");
-                });
-                $(this).css("background-color", "#6c757d");
-                $('#selectize-tags').val(value);
-            });
+            let selectedKategori = '{{ $info->kategori }}';
 
-            $('.item-pelanggan').click(function(e) {
-                e.preventDefault();
-                let outletID = $('#selectize-outlet').val();
-                if (outletID == '') {
-                    let params = {
-                        icon: 'warning',
-                        title: 'Silahkan Pilih Outlet !',
-                        text: 'Pastikan nama outlet sudah sesuai !'
-                    }
-                    showAlaret(params);
-                    return false;
-                }
-                let value = $(this).data('value');
-                $('.item-pelanggan').not(this).each(function() {
-                    $(this).css("background-color", "#edeff1");
-                });
-                $(this).css("background-color", "#6c757d");
-                $('#selectize-pelanggan').val(value);
-                if (value == 'member') {
-                    $('.pilih_member').css("display", "flex");
-                    $(".data-pelanggan").prop('readonly', true);
-                    $(".data-pelanggan").css('background-color', '#cfcece');
-                    $(".data-pelanggan").css('cursor', 'no-drop');
-                } else {
-                    $('.pilih_member').css("display", "none");
-                    $(".data-pelanggan").prop('readonly', false);
-                    $(".data-pelanggan").css('background-color', '#fff');
-                    $(".data-pelanggan").css('cursor', 'auto');
-                }
-            });
+            // Set background color based on the selected parfume
+            $('.item[data-value="' + selectedKategori + '"]').css("background-color", "#6c757d");
 
-            $('.item-outlet').click(function(e) {
-                e.preventDefault();
-                let value = $(this).data('value');
-                $('.item-outlet').not(this).each(function() {
-                    $(this).css("background-color", "#edeff1");
-                });
-                $(this).css("background-color", "#6c757d");
-                $('#selectize-outlet').val(value);
-                $(".first-outlet").prop('readonly', false);
-            });
+
+            // Trigger click event for the initially selected parfume
+            $('.item[data-value="' + selectedKategori + '"]').click();
+
+
+            let selectedPelanggan = '{{ $info->member_id !== 0 ? 'member' : 'non_member' }}';
+
+            // Set background color based on the selected parfume
+            $('.item-pelanggan[data-value="' + selectedPelanggan + '"]').css("background-color", "#6c757d");
+            $('.item-pelanggan[data-value="' + selectedPelanggan + '"]').click();
+
+            if (selectedPelanggan == 'member') {
+                $(".data-pelanggan").prop('readonly', true);
+                $(".data-pelanggan").css('background-color', '#cfcece');
+                $(".data-pelanggan").css('cursor', 'no-drop');
+            } else {
+                $(".data-pelanggan").prop('readonly', false);
+                $(".data-pelanggan").css('background-color', '#fff');
+                $(".data-pelanggan").css('cursor', 'auto');
+            }
+
+
+            // Trigger click event for the initially selected parfume
+
+
+
+            let selectedOutlet = '{{ $info->outlet_id }}';
+
+            // Set background color based on the selected parfume
+            $('.item-outlet[data-value="' + selectedOutlet + '"]').css("background-color", "#6c757d");
+
+
+            // Trigger click event for the initially selected parfume
+            $('.item-outlet[data-value="' + selectedOutlet + '"]').click();
+
+
 
             let selectedParfume = '{{ $info->parfume }}';
 
             // Set background color based on the selected parfume
             $('.item-parfume[data-value="' + selectedParfume + '"]').css("background-color", "#6c757d");
 
-            // Click event for selecting a parfume
-            $('.item-parfume').click(function(e) {
-                e.preventDefault();
-                let value = $(this).data('value');
-                $('.item-parfume').not(this).each(function() {
-                    $(this).css("background-color", "#edeff1");
-                });
-                $(this).css("background-color", "#6c757d");
-                $('#selectize-parfume').val(value);
-                // $(".first-parfume").prop('readonly', false);
-            });
 
             // Trigger click event for the initially selected parfume
             $('.item-parfume[data-value="' + selectedParfume + '"]').click();
 
-            $('.item-pembayaran').click(function(e) {
-                e.preventDefault();
-                let outletID = $('#selectize-outlet').val();
-                if (outletID == '') {
-                    let params = {
-                        icon: 'warning',
-                        title: 'Silahkan Pilih Outlet !',
-                        text: 'Pastikan nama outlet sudah sesuai !'
-                    }
-                    showAlaret(params);
-                    return false;
-                }
-                let value = $(this).data('value');
-                $('.item-pembayaran').not(this).each(function() {
-                    $(this).css("background-color", "#edeff1");
-                });
-                $(this).css("background-color", "#6c757d");
-                $('#selectize-pembayaran').val(value);
-                if (value == 'member') {
-                    $('.pilih_member').css("display", "flex");
-                    $(".data-pembayaran").prop('readonly', true);
-                    $(".data-pembayaran").css('background-color', '#cfcece');
-                    $(".data-pembayaran").css('cursor', 'no-drop');
-                } else {
-                    $('.pilih_member').css("display", "none");
-                    $(".data-pembayaran").prop('readonly', false);
-                    $(".data-pembayaran").css('background-color', '#fff');
-                    $(".data-pembayaran").css('cursor', 'auto');
-                }
-            });
+
+
+            let selectedPembayaran = '{{ $info->pembayaran }}';
+
+            // Set background color based on the selected parfume
+            $('.item-pembayaran[data-value="' + selectedPembayaran + '"]').css("background-color", "#6c757d");
+
+            // Trigger click event for the initially selected parfume
+            $('.item-pembayaran[data-value="' + selectedPembayaran + '"]').click();
 
             $('#show-member').click(function(e) {
                 e.preventDefault();
@@ -663,57 +709,19 @@
                 });
             });
 
-            $('#triggerCorporate').click(function(e) {
-                e.preventDefault();
-                $('#state-saving-datatable').DataTable({
-                    responsive: true,
-                    processing: true,
-                    serverSide: true,
-                    method: "Get",
-                    scrollX: true,
-                    bDestroy: true,
-                    ajax: {
-                        url: "{!! route('user_corporate.getData') !!}",
-                        type: "Get",
-                        dataType: "JSON"
-                    },
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'id'
-                        },
-                        {
-                            data: 'user.name',
-                            name: 'user.name'
-                        },
-                        {
-                            mRender: function(data, type, row, meta) {
-                                if (row.phone == '' || row.phone == 0) {
-                                    return '-';
-                                } else {
-                                    let phone = '0' + row.phone;
-                                    return row.phone;
-                                }
-                            }
-                        },
-                        {
-                            mRender: function(data, type, row, meta) {
-                                let action_button = '<div>';
-                                action_button +=
-                                    '<input type="radio" name="radio" class="radio1" value="' +
-                                    row.user.name + '" data-id="' + row.id +
-                                    '" data-phone="' + row.phone + '" data-address="' + row
-                                    .address + '">';
-                                action_button += ' </div>';
-                                return action_button;
-                            }
-                        },
-                    ]
-                });
-            });
-
             var member_table = $('#state-saving-datatable').DataTable();
 
             $('#state-saving-datatable tbody').on('click', 'tr', function() {
+                let outletID = $('#selectize-outlet').val();
+                if (outletID == '') {
+                    let params = {
+                        icon: 'warning',
+                        title: 'Silahkan Pilih Outlet !',
+                        text: 'Pastikan nama outlet sudah sesuai !'
+                    }
+                    showAlaret(params);
+                    return false;
+                }
                 var row = $(this);
                 row.find('.input[type="radio"]').attr('checked', 'checked');
                 let id = row.find('input[type="radio"]').data('id');
@@ -723,8 +731,8 @@
                 $('#nama').val(name)
                 $('#no_handphone').val(phone)
                 $('#alamat').val(address)
-                $('#corporate_id').val(id)
-                $('#modal-corporate').modal('hide');
+                $('#member_id').val(id)
+                $('#modal-member').modal('hide');
             });
 
             function handleFileInputChange() {
@@ -771,7 +779,7 @@
                         return false;
                     }
 
-                    // Loop through all selected files
+                    // Loop melalui semua file yang dipilih
                     for (let i = 0; i < files.length; i++) {
                         const file = files[i];
                         const imageType = /^image\//;
@@ -780,9 +788,6 @@
                             continue;
                         }
                         let currentInput = $('#images')[0];
-
-                        // Show loader here
-                        showLoader();
 
                         let fileReader = new FileReader();
                         fileReader.onload = (function(e) {
@@ -795,61 +800,39 @@
 
                             console.log(filesArray);
                             $(".remove", preview).click(function() {
-                                Swal.fire({
-                                    title: 'Hapus image ini ?',
-                                    text: "Image ini akan dihapus!",
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#d33',
-                                    cancelButtonColor: '#3085d6',
-                                    confirmButtonText: 'Hapus!'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        $(this).parent(".pip").remove();
-                                        // Remove the image when the "Remove" button is clicked
-                                        const fileIndex = filesArray.indexOf(file);
-                                        if (fileIndex !== -1) {
-                                            filesArray.splice(fileIndex, 1);
-                                            handleChange();
-                                        }
-                                    }
-                                });
-                            });
+                                $(this).parent(".pip").remove();
+                                // Hapus gambar saat tombol "Hapus" diklik
+                                const fileIndex = filesArray.indexOf(file);
+                                if (fileIndex !== -1) {
+                                    filesArray.splice(fileIndex, 1);
 
-                            // Hide loader after successful loading
-                            hideLoader();
+                                    handleChange();
+                                }
+                            });
                         });
                         fileReader.readAsDataURL(file);
                         filesArray.push(file);
                         handleChange();
+                        function handleChange() {
+                            // Buat objek DataTransfer baru
+                            const newFilesList = new DataTransfer();
+    
+                            // Tambahkan file ke objek DataTransfer
+                            filesArray.forEach(file => newFilesList.items.add(
+                                file));
+    
+                            // Set nilai baru untuk file input
+                            images.files = newFilesList.files;
+    
+                            // Tambahkan event listener ke file input baru
+                            images.addEventListener("change",
+                                handleFileInputChange);
+                        }
                     }
+                    
                 });
-
-                function showLoader() {
-                    // Add code to show your loader (e.g., display a loading spinner)
-                    $("#loader").html('<i class="fas fa-spinner fa-spin"></i> Loading...');
-                }
-
-                function hideLoader() {
-                    // Add code to hide your loader
-                    $("#loader").empty();
-                }
-
-                function handleChange() {
-                    // Create a new DataTransfer object
-                    const newFilesList = new DataTransfer();
-
-                    // Add files to the DataTransfer object
-                    filesArray.forEach(file => newFilesList.items.add(file));
-
-                    // Set the new value for the file input
-                    images.files = newFilesList.files;
-
-                    // Add event listener to the new file input
-                    images.addEventListener("change", handleFileInputChange);
-                }
             } else {
-                Swal.fire('Browser Tidak Support !', 'error');
+                Swal.fire('Browser Tidak Support !', 'error')
             }
 
 
@@ -870,7 +853,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: "GET",
-                            url: "{{ route('jemput_non_pesanan.deleteImg', $info->kode_transaksi) }}",
+                            url: "{{ route('registrasi.deleteImg', $info->kode_transaksi) }}",
                             data: {
                                 "_token": "{{ csrf_token() }}",
                                 "_method": "GET",
@@ -906,7 +889,7 @@
                     scrollX: true,
                     // bDestroy: true,
                     ajax: {
-                        url: "{!! route('jemput_non_pesanan.get-data-layanan') !!}",
+                        url: "{!! route('registrasi.get-data-layanan') !!}",
                         type: "POST",
                         dataType: "JSON",
                         data: ({
@@ -967,17 +950,15 @@
                 let harga = row.find('input[type="radio"]').data('harga');
                 let jenis_item = row.find('input[type="radio"]').data('jenis_item');
                 let index_row = $('.index_row').val();
-                let this_row = $(document).find(
-                    `.layanan-selected-list[childidx=${index_row}]`);
+                let this_row = $(document).find(`.layanan-selected-list[childidx=${index_row}]`);
                 this_row.find(".form-control").prop('readonly', false);
                 this_row.find(".form-control").css('background-color', '#FFF');
                 this_row.find('.layanan_nama_label').html(nama);
                 let harga_label = numberFormater(parseInt(harga));
-                this_row.find('.layanan_harga_label').html('Rp. ' + harga_label);
+                this_row.find('.layanan_harga_label').html('Rp. ' + harga_label + '/' + jenis_item);
                 this_row.find('.layanan_id').val(id);
                 this_row.find('.layanan_nama').val(nama);
                 this_row.find('.layanan_harga').val(harga);
-                this_row.find('.kode_layanan').val(kode);
 
                 cloneSumTotal();
 
@@ -986,8 +967,7 @@
                 $('#modal-layanan').modal('hide');
             });
 
-
-            function cloneSumTotal() {
+            function cloneSumTotal(){
                 let sum = 0;
                 $(document).find(".layanan_harga").each(function() {
                     sum += +$(this).val();
@@ -1003,98 +983,85 @@
                 $(".sub_all_qty_harga").html(sum_total);
             }
 
-            $(document).on('keyup', '.layanan_qty_kg', function(e) {
+            function updateRowValues(row) {
+                let harga = row.find('.layanan_harga').val() || 0;
+                let qtySatuan = parseNumber(row.find('.layanan_qty_satuan').val()) || 0;
+                let qtySpecialTreatment = parseNumber(row.find('.layanan_qty_special_treatment').val()) || 0;
+                let hargaSpecialTreatment = parseNumber(row.find('.layanan_harga_special_treatment').val()) || 0;
 
-                let sum = 0.0;
-                $(document).find(".layanan_qty_kg").each(function() {
-                    sum += +$(this).val();
-                });
-                $(".sub_layanan_qty_kg").html(sum);
-                console.log(sum);
-            });
+                let totalSatuan = parseInt(harga) * qtySatuan;
+                let totalSpecialTreatment = parseInt(qtySpecialTreatment) * parseInt(hargaSpecialTreatment) || 0;
+
+                let subTotal = totalSatuan + totalSpecialTreatment;
+                let subTotalLabel = numberFormater(subTotal);
+
+                row.find('.layanan_total_label').html('Rp. ' + subTotalLabel);
+                row.find('.layanan_total').val(subTotal);
+            }
 
             $(document).on('keyup', '.layanan_qty_satuan', function(e) {
-                let formattedValue = formatNumber(parseNumber(this
-                    .value)); // Format and then parse the value
-                this.value = formattedValue; // Update the input value
+                let formattedValue = formatNumber(parseNumber(this.value));
+                this.value = formattedValue;
 
                 if (/^0/.test(this.value)) {
                     this.value = this.value.replace(/^0/, "");
                 }
 
-                let this_row = $(this).parent().parent();
-                let harga = this_row.find('.layanan_harga').val() || 0;
-                let layanan_qty_special_treatment = this_row.find(
-                        '.layanan_qty_special_treatment').val() ||
-                    0;
-                let layanan_harga_special_treatment = this_row.find(
-                        '.layanan_harga_special_treatment')
-                    .val() || 0;
-                let total_special_treatment = parseInt(layanan_qty_special_treatment) *
-                    parseInt(
-                        layanan_harga_special_treatment) || 0;
+                let thisRow = $(this).closest('tr');
+                updateRowValues(thisRow);
 
-                let quantity = parseNumber(
-                    formattedValue); // Use the parsed value for calculations
-
-                if (layanan_harga_special_treatment >= 0 && quantity >= 0 &&
-                    layanan_qty_special_treatment >= 0) {
-                    let total_harga = parseInt(harga) * quantity;
-                    let sub_total_harga_this_row = total_harga + parseInt(
-                        total_special_treatment) || 0;
-
-                    let sub_total_harga_this_row_label = numberFormater(parseInt(
-                        sub_total_harga_this_row));
-                    this_row.find('.layanan_total_label').html('Rp. ' +
-                        sub_total_harga_this_row_label);
-                    this_row.find('.layanan_total').val(sub_total_harga_this_row);
-
-                    sum_layanan_qty_satuan();
-                }
+                sumQtySatuan();
             });
 
-            function sum_layanan_qty_satuan() {
-                let sum_layanan_qty_satuan = 0;
+            function sumQtySatuan(){
+                let sumQtySatuan = 0;
                 $('#table-data-layanan').find(".layanan_qty_satuan").each(function() {
                     if ($(this).val() !== '') {
-                        sum_layanan_qty_satuan += +parseNumber($(this).val());
+                        sumQtySatuan += +parseNumber($(this).val());
                     }
                 });
-                $(".sub_layanan_qty_satuan").html(formatNumber(sum_layanan_qty_satuan));
+                $(".sub_layanan_qty_satuan").html(formatNumber(sumQtySatuan));
 
-                let sum_layanan_qty_satuan_total = 0;
+                let sumTotal = 0;
                 $('#table-data-layanan').find(".layanan_total").each(function() {
                     if ($(this).val() !== '') {
-                        sum_layanan_qty_satuan_total += +parseNumber($(this).val());
+                        sumTotal += +parseNumber($(this).val());
                     }
                 });
-                sum_layanan_qty_satuan_total = numberFormater(sum_layanan_qty_satuan_total);
-                $(".sub_all_qty_harga").html(sum_layanan_qty_satuan_total);
+                $(".sub_all_qty_harga").html(numberFormater(sumTotal));
+
             }
 
-
             $(document).on('keyup', '.layanan_qty_special_treatment', function(e) {
-                let formattedValue = formatNumber(parseNumber(this
-                    .value)); // Format and then parse the value
-                this.value = formattedValue; // Update the input value
+                let formattedValue = formatNumber(parseNumber(this.value));
+                this.value = formattedValue;
+
                 if (/^0/.test(this.value)) {
-                    this.value = this.value.replace(/^0/, "")
+                    this.value = this.value.replace(/^0/, "");
                 }
 
-                sum_layanan_qty_special_treatment();
+                let thisRow = $(this).closest('tr');
+                updateRowValues(thisRow);
+
+                sumQtySpecialTreatment();
             });
 
-            function sum_layanan_qty_special_treatment() {
-                let sum_layanan_qty_special_treatment = 0;
-                $('#table-data-layanan').find(".layanan_qty_special_treatment").each(
-                    function() {
-                        if ($(this).val() !== '') {
-                            sum_layanan_qty_special_treatment += +parseNumber($(this)
-                                .val());
-                        }
-                    });
-                $(".sub_special_teatment_qty_satuan").html(formatNumber(
-                    sum_layanan_qty_special_treatment));
+            function sumQtySpecialTreatment(){
+                let sumQtySpecialTreatment = 0;
+                $('#table-data-layanan').find(".layanan_qty_special_treatment").each(function() {
+                    if ($(this).val() !== '') {
+                        sumQtySpecialTreatment += +parseNumber($(this).val());
+                    }
+                });
+                $(".sub_special_teatment_qty_satuan").html(formatNumber(sumQtySpecialTreatment));
+
+                let sumTotal = 0;
+                $('#table-data-layanan').find(".layanan_total").each(function() {
+                    if ($(this).val() !== '') {
+                        sumTotal += +parseNumber($(this).val());
+                    }
+                });
+                $(".sub_all_qty_harga").html(numberFormater(sumTotal));
             }
 
 
@@ -1186,7 +1153,7 @@
                         if (transaksi_detail_id !== '') {
                             $.ajax({
                                 type: "GET",
-                                url: "{{ route('jemput_non_pesanan.deleteLayanan', $info->kode_transaksi) }}",
+                                url: "{{ route('registrasi.deleteLayanan', $info->kode_transaksi) }}",
                                 data: {
                                     "_token": "{{ csrf_token() }}",
                                     "_method": "GET",
@@ -1262,7 +1229,7 @@
                     $('#loading').css("display", "block");
                     $.ajax({
                         type: "POST",
-                        url: `{{ route('jemput_non_pesanan.update') }}`,
+                        url: `{{ route('registrasi.update') }}`,
                         data: formData,
                         processData: false,
                         contentType: false,
@@ -1270,9 +1237,7 @@
                         success: function(response) {
                             if (response.status == true) {
                                 let print_home =
-                                    `{{ route('jemput_non_pesanan.history') }}`;
-                                // + response
-                                // .kode_transaksi;
+                                    `{{ url('jemput-pesanan/history') }}`;
                                 // let print_url = `{{ url('jemput-pesanan/print') }}`;
                                 // let redirect_print_url = print_url + '/' + response
                                 //     .kode_transaksi;

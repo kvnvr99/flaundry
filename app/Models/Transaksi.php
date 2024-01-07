@@ -44,6 +44,7 @@ class Transaksi extends Authenticatable
         'kg_cuci',
         'quantity_pengeringan',
         'kg_pengeringan',
+        'kategori',
         'corporate_id'
     ];
 

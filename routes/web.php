@@ -175,6 +175,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store', [KasirController::class, 'store'])->name('registrasi.store');
         Route::get('/history', [KasirController::class, 'history'])->name('registrasi.history');
         Route::post('/getDataHistory', [KasirController::class, 'getDataHistory'])->name('registrasi.getDataHistory');
+        Route::get('/history/{kode_transaksi}/edit', [KasirController::class, 'edit'])->name('registrasi.edit');
+        Route::get('/history/{kode_transaksi}', [KasirController::class, 'detail'])->name('registrasi.detail');
+        Route::get('/history/{kode_transaksi}/deleteLayanan', [KasirController::class, 'deleteLayanan'])->name('registrasi.deleteLayanan');
+        Route::get('/history/{kode_transaksi}/deleteImg', [KasirController::class, 'deleteImg'])->name('registrasi.deleteImg');
+        Route::post('/update', [KasirController::class, 'update'])->name('registrasi.update');
     });
 
     Route::prefix('request-laundry')->middleware(['role_or_permission:Maintener|registrasi'])->group(function () {

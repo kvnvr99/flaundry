@@ -192,7 +192,7 @@
                                                             </td>
                                                             <td class="text-right no-padding" width="15%">
                                                                 <span class="layanan_harga_label">
-                                                                    Rp. {{ number_format($row->harga, 2, '.', '') }}
+                                                                    Rp. {{ number_format($row->harga, 2, ',', '.') }}
                                                                 </span>
                                                                 <input data-toggle="modal" readonly
                                                                     class="form-control text-right show-layanan layanan_harga"
@@ -210,7 +210,7 @@
                                                                 <input
                                                                     class="form-control no-padding layanan_qty_satuan text-right"
                                                                     required
-                                                                    value="{{ number_format($row->jumlah, 0, '.', '') }}"
+                                                                    value="{{ number_format($row->jumlah, 0, ',', '.') }}"
                                                                     maxlength="9" type="text" readonly
                                                                     name="layanan[0][qty_satuan]" autocomplete="off"
                                                                     onkeypress="return isNumber(event)" />
@@ -218,7 +218,7 @@
                                                             <td class="text-right no-padding">
                                                                 <input
                                                                     class="form-control no-padding layanan_qty_special_treatment text-right"
-                                                                    value="{{ number_format($row->qty_special_treatment, 0, '.', '') }}"
+                                                                    value="{{ number_format($row->qty_special_treatment, 0, ',', '.') }}"
                                                                     type="text" maxlength="9"
                                                                     name="layanan[{{ $key }}][qty_special_treatment]"
                                                                     autocomplete="off" readonly
@@ -233,7 +233,7 @@
                                                             <td class="text-right" width="15%">
                                                                 <span class="layanan_total_label">
                                                                     Rp.
-                                                                    {{ number_format($row->harga * $row->jumlah, 2, '.', '') }}
+                                                                    {{ number_format($row->harga * $row->jumlah, 2, ',', '.') }}
                                                                 </span>
                                                                 <input data-toggle="modal" readonly
                                                                     class="form-control text-left show-layanan layanan_total"
