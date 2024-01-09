@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
 //Master Data
+use App\Http\Controllers\ClearController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Transaksi\QcController;
 use App\Http\Controllers\Transaksi\CuciController;
@@ -11,9 +12,9 @@ use App\Http\Controllers\MasterData\RoleController;
 use App\Http\Controllers\MasterData\UserController;
 use App\Http\Controllers\Transaksi\KasirController;
 use App\Http\Controllers\Transaksi\TopupController;
-use App\Http\Controllers\MasterData\HargaController;
 
 //Transaksi
+use App\Http\Controllers\MasterData\HargaController;
 use App\Http\Controllers\MasterData\MemberController;
 use App\Http\Controllers\MasterData\OutletController;
 use App\Http\Controllers\Transaksi\SetrikaController;
@@ -25,20 +26,20 @@ use App\Http\Controllers\MasterData\CorporateController;
 use App\Http\Controllers\Laporan\LaporanMemberController;
 use App\Http\Controllers\Laporan\LaporanOutletController;
 use App\Http\Controllers\MasterData\MasterDataController;
-use App\Http\Controllers\Member\HistoryLaundryController;
 
 //Member
+use App\Http\Controllers\Member\HistoryLaundryController;
 use App\Http\Controllers\Transaksi\PengeringanController;
-use App\Http\Controllers\Infogram\InfogramOutletController;
 
 //Laporan
+use App\Http\Controllers\Infogram\InfogramOutletController;
 use App\Http\Controllers\Laporan\LaporanExpedisiController;
 use App\Http\Controllers\Transaksi\ExpedisiAntarController;
 use App\Http\Controllers\Transaksi\JemputPesananController;
 use App\Http\Controllers\Transaksi\RekapComplainController;
 use App\Http\Controllers\Laporan\LaporanCorporateController;
-use App\Http\Controllers\Member\PermintaanLaundryController;
 
+use App\Http\Controllers\Member\PermintaanLaundryController;
 use App\Http\Controllers\Transaksi\ExpedisiJemputController;
 use App\Http\Controllers\Transaksi\RequestLaundryController;
 use App\Http\Controllers\Infogram\InfogramExpedisiController;
@@ -53,6 +54,17 @@ Route::get('/seeder/permission', function () {
     ]);
 
     return redirect('/home');
+});
+
+Route::prefix('clear')->group(function () {
+    Route::get('/all', [ClearController::class, 'clearOptimize'])->name('clear.all');
+    Route::get('/config', [ClearController::class, 'clearConfig'])->name('clear.config');
+    Route::get('/cache', [ClearController::class, 'clearCache'])->name('clear.cache');
+    Route::get('/migrate', [ClearController::class, 'migrate'])->name('migrate');
+    Route::get('/fresh', [ClearController::class, 'migrateFresh'])->name('migrate.fresh');
+    Route::get('/seeder', [ClearController::class, 'seeder'])->name('seeder');
+    Route::get('/cart', [CartController::class, 'clearCart'])->name('clear_cart');
+    Route::get('/storage', [ClearController::class, 'storageLink'])->name('storage');
 });
 
 Route::get('/', function() {
